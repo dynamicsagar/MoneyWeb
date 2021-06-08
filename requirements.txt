@@ -1,0 +1,2 @@
+allure-pytest==2.8.16
+allure-python-commons==2.8.16
