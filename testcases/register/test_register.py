@@ -155,21 +155,26 @@ class RegisterTests(unittest.TestCase):
                                  confirm_password)
         self.register.clickTermsCheckbox()
         self.register.clickConfirmAccountButton()
-        self.register.verifySignUpSuccessfully()
-        # self.register.verifyTeamNameFieldNotEmpty(company_name)
-        # self.register.verifyContinueButtonState(False)
-        self.register.inviteTeamMember(manager_email)
-        time.sleep(25)
+        self.register.verifyUserNavigatesToInviteTeamScreen()
 
-    # def test_0020_register_team_name_already_exist_validation(self):
-    #     """Verify team name already exist error"""
-    #
-    # def test_0222_register_add_new_team_name(self):
-    #     """Verify user is able to add new team."""
-    #
-    # def test_0220_register_invite_team_member(self):
-    #     """Verify user is able to invite team member from add team box."""
-    #
+    def test_0020_register_team_name_field_not_empty(self):
+        """Verify team name already exist error"""
+        self.register.verifyTeamNameFieldNotEmpty(company_name)
+
+    def test_0222_register_team_name_already_exists_validation(self):
+        """Verify team name already exist validation error"""
+        self.register.VerifyTeamNameAlreadyExists()
+        self.register.verifyContinueButtonState(False)
+
+    def test_0222_register_add_new_team_name(self):
+        """Verify user is able to add new team."""
+        self.register.addNewTeamName(team_name)
+        self.register.verifyContinueButtonState(True)
+
+    def test_0220_register_invite_team_member(self):
+        """Verify user is able to invite team member from add team box."""
+        self.register.verifyTeamMemberInvitedSuccessfully(contractor_email)
+
     # def test_0221_register_(self):
     #
     # def test_02222_register_user_successfully_from_email_confirmation_link(self):

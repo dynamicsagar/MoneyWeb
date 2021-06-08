@@ -11,7 +11,9 @@ password_mismatch = "Re-enter your password confirmation so it matches your pass
 password_lookalike_message = "Password can't contain your username or email."
 invalid_phone_message = "Invalid phone number"
 team_heading = "Give your team a name."
+team_name_already_exits = "Team name already exists."
 already_have_a_sila_account = "Already have a Sila account? Login"
+invitation_sent_successfully = "Invites successfully sent!"
 
 #  Heading after page redirect by clicking on links
 redirected_privacy_page_heading = "Privacy Policy"

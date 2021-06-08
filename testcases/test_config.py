@@ -31,7 +31,7 @@ contractor = utility.get_unique_name(15)
 contractor_email = "silaqaautomation+" + contractor + "@gmail.com"
 
 # Create team name
-team = utility.get_unique_name(20)
+team_name = "team_" + user
 
 # Register invalid and mix and max data
 password_below_min_limit = "1234567"

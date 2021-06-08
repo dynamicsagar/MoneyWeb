@@ -59,9 +59,12 @@ class RegisterPage(SeleniumDriver):
     _password_lookalike_email_validation = '''//div[contains(text(),"Password can't contain your username or email.")]'''
     _team_field_heading = "//h2[contains(text(),'Give your team a name.')]"
     _team_field_label = "//label[contains(text(),'Team Name')]"
-    _invite_team_member_field = "//input[@id='InviteTeamMembers.team_name']"
+    _add_team_name_field = "//input[@id='InviteTeamMembers.team_name']"
+    _team_name_validation_icon = ".fas"
+    _team_name_already_exists_validation = "//div[contains(text(),'Team name already exists.')]"
     _add_team_mates_box = "//textarea[@id='InviteTeamMembers.emails']"
     _send_invites_button = "//button[contains(text(),'Send Invites')]"
+    _invitation_sent_message = "//div[@id='sila-app']/div/div/div/main/div/div/div/div/div/div/div[2]/div/form/div[3]/p"
     _continue_button = "//button[contains(text(),'Continue')]"
 
     # Selectors
@@ -99,8 +102,14 @@ class RegisterPage(SeleniumDriver):
         return self.get_text(self._team_field_heading)
 
     def getTeamFieldText(self):
-        self.wait_for_element(self._invite_team_member_field)
-        return self.get_text(self._invite_team_member_field)
+        self.wait_for_element(self._add_team_name_field)
+        return self.get_text(self._add_team_name_field)
+
+    def getTeamNameValidationText(self):
+        return self.get_text(self._team_name_already_exists_validation)
+
+    def getTeamInvitationSentText(self):
+        return self.get_text(self._invitation_sent_message)
 
     # Actions
     def clickSignUpLink(self):
@@ -183,6 +192,16 @@ class RegisterPage(SeleniumDriver):
         self.element_click(self._phone_icon, 'css')
         self.log.info("Clicked on phone validation icon")
 
+    def clickTeamName(self):
+        self.wait_for_element(self._add_team_name_field)
+        self.element_click(self._add_team_name_field)
+        clear_field = Keys.CONTROL + "a" + Keys.DELETE
+        self.send_keys(clear_field, self._add_team_name_field)
+
+    def clickTeamNameValidationIcon(self):
+        self.wait_for_element(self._team_name_validation_icon)
+        self.element_click(self._team_name_validation_icon)
+
     def inviteTeamMember(self, memberEmail):
         self.element_click(self._add_team_mates_box)
         self.send_keys(memberEmail, self._add_team_mates_box)
@@ -218,6 +237,10 @@ class RegisterPage(SeleniumDriver):
         self.send_keys(clear_field, self._password_field)
         self.send_keys(clear_field, self._confirm_password_field)
         time.sleep(2)
+
+    def addNewTeamName(self, teamName):
+        self.clickTeamName()
+        self.send_keys(teamName, self._add_team_name_field)
 
     # Assertions
     def verifyPageTitle(self):
@@ -299,7 +322,8 @@ class RegisterPage(SeleniumDriver):
                            redirected_account_linking_page_heading)
 
     def verifyKYCIdentityVerificationLink(self):
-        self.link_redirect(self._kyc_kyb_identity_verification_api_link, self._redirect_kyb_kyc_verification_page_heading,
+        self.link_redirect(self._kyc_kyb_identity_verification_api_link,
+                           self._redirect_kyb_kyc_verification_page_heading,
                            redirected_kyc_kyb_identity_verification_page_heading)
 
     def verifyAlreadyHaveSilaAccounText(self):
@@ -307,19 +331,18 @@ class RegisterPage(SeleniumDriver):
         actual_text = self.getAlreadyHaveSilaAccountText()
         self.verify_text_match(actual_text, already_have_a_sila_account)
 
-    def verifySignUpSuccessfully(self):
-        self.verifyTeamFieldHeading()
-
-    def verifyTeamFieldHeading(self):
+    def verifyUserNavigatesToInviteTeamScreen(self):
         heading = self.getTeamFieldHeading()
         self.verify_text_match(heading, team_heading)
 
     def verifyTeamNameFieldNotEmpty(self, name):
-        # team_name = self.getTeamFieldText()
-        # self.verify_text_match(team_name, name)
-        # time.sleep(2)
-        self.clear_field(self._invite_team_member_field)
-        time.sleep(20)
+        team_name = self.getTeamFieldText()
+        self.verify_text_match(team_name, name)
+
+    def VerifyTeamNameAlreadyExists(self):
+        self.clickTeamNameValidationIcon()
+        text = self.getTeamNameValidationText()
+        self.verify_text_match(text, team_name_already_exits)
 
     def verifyContinueButtonState(self, value=True):
         if value == False:
@@ -327,10 +350,10 @@ class RegisterPage(SeleniumDriver):
         else:
             self.check_element_state(self._continue_button, value, element_name="continue button on team invite screen")
 
-    # def verifyMemberInvitedSuccessfully(self, memberEmail):
-    #     self.inviteTeamMember(memberEmail)
-    #     self.verify_text_match()
-    #     self.
+    def verifyTeamMemberInvitedSuccessfully(self, memberEmail):
+        self.inviteTeamMember(memberEmail)
+        text = self.getTeamInvitationSentText()
+        self.verify_text_match(text, invitation_sent_successfully)
 
     def verifyConfirmEmail(self, emailPrefix):
         self.log.info("Email verification started")
