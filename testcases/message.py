@@ -1,7 +1,14 @@
+from selenium.webdriver.common.keys import Keys
+
+# keyboard keys
+clear_field = Keys.CONTROL + "a" + Keys.DELETE
+
+
 sign_up_page_title = "Sign Up | Sila API"
 login_page_heading = "Log-in to the Console."
-invite_team_member_title = "Sila Console - Register::Invite Team Members"
-questionnaire_page_title = "Sila Console - Register::Questions"
+forgot_password_page_heading = "Forgot password?"
+invite_team_member_title = "Sila Console - register::Invite Team Members"
+questionnaire_page_title = "Sila Console - register::Questions"
 
 invalid_email_address = "Invalid email address"
 email_more_than_max_length = "Ensure this field has no more than 254 characters."
@@ -12,8 +19,26 @@ password_lookalike_message = "Password can't contain your username or email."
 invalid_phone_message = "Invalid phone number"
 team_heading = "Give your team a name."
 team_name_already_exits = "Team name already exists."
-already_have_a_sila_account = "Already have a Sila account? Login"
+already_have_a_sila_account = "Already have a Sila account? login"
 invitation_sent_successfully = "Invites successfully sent!"
+email_already_registered = "This email is already registered:"
+invalid_email_in_invite_team_member_box= "At least one or more email addresses are invalid."
+invalid_login = "Invalid login, please try again."
+invalid_password_attempt = "Your account will be temporarily locked after 4 more unsuccessful login attempts."
+
+
+# login
+empty_user_name = "Username / Email Address is required"
+user_name_validation = "Can't use spaces or special characters and must be at least 3 characters."
+empty_password = "Password is required"
+
+# logout
+popup_text = 'Select "Logout" below if you are ready to end your'
+popup_title = "Ready to Leave?"
+
+# forgot password
+email_address_required = "Email Address is required"
+
 
 #  Heading after page redirect by clicking on links
 redirected_privacy_page_heading = "Privacy Policy"

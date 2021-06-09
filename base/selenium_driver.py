@@ -219,19 +219,20 @@ class SeleniumDriver:
         Check if element is displayed
         Either provide element or a combination of locator and locatorType
         """
-        isDisplayed = False
         try:
             if locator:  # This means if locator is not empty
                 element = self.get_element(locator, locatorType)
             if element is not None:
-                isDisplayed = element.is_displayed()
-                self.log.info("Element is displayed")
-            else:
-                self.log.info("Element not displayed")
-            return isDisplayed
-        except:
-            print("Element not found")
-            return False
+                assert element.is_displayed() == True, "Element is not displaying on the page."
+            # else:
+            #     self.log.info("Element not displayed")
+            # return isDisplayed
+        except AssertionError as msg:
+            self.log.info(msg)
+            name = datetime.datetime.today().strftime('%Y-%m-%d-%M-%S')
+            allure.attach(self.driver.get_screenshot_as_png(), name=name, attachment_type=AttachmentType.PNG)
+            self.screenShot(element + ' ' + 'not found')
+            raise
 
     def element_presence_check(self, locator, byType):
         """
@@ -389,11 +390,6 @@ class SeleniumDriver:
         except:
             self.log.info("Locator not found. Cannot click on the element with locator: " + locator +
                           "locatorType: " + locatorType)
-        else:
-            if not value:
-                self.log.info(element_name + " is in disable state.")
-            else:
-                self.log.info(element_name + " is in enable state.")
 
     def link_redirect(self, locator="", locator1='', expected_text='', locatorType="xpath"):
         try:

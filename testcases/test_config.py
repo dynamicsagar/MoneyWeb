@@ -1,6 +1,10 @@
 from utilities.util import Util
 
-# Register user data
+
+stage_url = "https://stageconsole.silamoney.com/login"
+production_url = "https://console.silamoney.com/login"
+
+# register user data
 first_name = "Sila_Admin"
 surname = "Automation"
 company_name = "ArcGate"
@@ -8,7 +12,7 @@ phone = "9874585855"
 password = "Arcgate1!"
 confirm_password = "Arcgate1!"
 
-# Register users email
+# register users email
 utility = Util()
 user = utility.get_unique_name(15)
 # user_email = "silaqaautomation+" + user + "@gmail.com"
@@ -33,10 +37,13 @@ contractor_email = "silaqaautomation+" + contractor + "@gmail.com"
 # Create team name
 team_name = "team_" + user
 
-# Register invalid and mix and max data
+# register invalid and mix and max data
 password_below_min_limit = "1234567"
 password_above_max_limit = "Automation Testing of max characters limits for sila admin api. Automation Testing of max characters limits"
 email_above_max_length = "fakedsadasdasddsadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsadassadasdasddsadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsadasssadasdasddsadasdasdasdasdasdasdasdasdasdasdasdasdasdgsadadasdasdasdasdasdasdsadasdasdasdasdasdasdasdasdasdasd@gmail.com"
 mismatch_confirm_password = "Arcgate12!"
 password_lookalike_email = "silaqaautomation"
 invalid_phone_num = "dadas"
+invalid_user_name = "fdd@g"
+invalid_password = "arcgate"
+

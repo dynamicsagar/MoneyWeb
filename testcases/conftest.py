@@ -3,13 +3,18 @@ import os
 import pytest
 
 from base.webdriver_factory import WebDriverFactory
-# from pages.test001_login_page import LoginPage
+# from pages.login.login_page import LoginPage
 from testcases.test_config import *
 
 
-@pytest.yield_fixture()
+@pytest.yield_fixture(scope="class")
 def setUp():
-    print("Running method level setUp")
+    folder_path = ("./reports")
+    # using listdir() method to list the files of the folder
+    test = os.listdir(folder_path)
+    for images in test:
+        if images.endswith(".json") or images.endswith(".txt") or images.endswith(".png"):
+            os.remove(os.path.join(folder_path, images))
     yield
     print("Running method level tearDown")
 
@@ -33,23 +38,13 @@ def oneTimeSetUp(request, browser, env):
     # password = (sheet.cell_value(1, 1))
     # username = user_email
     # user_pass = password
-    # lp.login_to_website(username, user_pass)
+    # lp.verifyLoginSuccessfully(user_email, password)
 
     if request.cls is not None:
         request.cls.driver = driver
     yield driver
     driver.quit()
     print("Running one time tearDown")
-
-
-@pytest.yield_fixture(scope="class")
-def remove_files():
-    folder_path = ("./reports")
-    # using listdir() method to list the files of the folder
-    test = os.listdir(folder_path)
-    for images in test:
-        if images.endswith(".json") or images.endswith(".txt") or images.endswith(".png"):
-            os.remove(os.path.join(folder_path, images))
 
 
 def pytest_addoption(parser):

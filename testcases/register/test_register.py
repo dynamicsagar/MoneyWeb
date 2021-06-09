@@ -2,12 +2,12 @@ import unittest
 import pytest
 
 from utilities.util import *
-from pages.Register.register_page import RegisterPage
+from pages.register.register_page import RegisterPage
 from testcases.test_config import *
 
 
 @pytest.mark.run(order=1)
-@pytest.mark.usefixtures("remove_files")
+@pytest.mark.usefixtures("setUp")
 class RegisterTests(unittest.TestCase):
     log = cl.customLogger(logging.DEBUG)
 
@@ -15,8 +15,8 @@ class RegisterTests(unittest.TestCase):
     def objectSetup(self, oneTimeSetUp):
         self.register = RegisterPage(self.driver)
 
-    def test_001_register_check_register_page(self):
-        """Verify user is on register page."""
+    def test_001_verify_register_page(self):
+        """Verify user is on the register page."""
         self.register.clickSignUpLink()
         self.register.verifyPageTitle()
 
@@ -112,44 +112,44 @@ class RegisterTests(unittest.TestCase):
     #     self.register.signUpForm(phone=invalid_phone_num)
     #     self.register.verifyPhoneValidationMessage()
     #
-    # def test_017_register_click_privacy_policy(self):
+    # def test_017_verify__privacy_policy(self):
     #     """Verify privacy policy link navigates user to privacy policy page.."""
     #     self.register.verifyPrivacyPolicyLink()
     #
-    # def test_018_register_click_terms_of_service_link(self):
+    # def test_018_verify_terms_of_service_link(self):
     #     """Verify terms of service link navigates user to terms and services page."""
     #     self.register.verifyTermsOfServiceLink()
     #
-    # def test_019_register_click_sdk_agreement_link(self):
+    # def test_019_verify_sdk_agreement_link(self):
     #     """Verify sdk agreement link navigates user to sdk agreement page."""
     #     self.register.verifySDKAgreementLink()
     #
-    # def test_020_register_click_ACH_transfer_link(self):
+    # def test_020_verify_ACH_transfer_link(self):
     #     """Verify ACH transfer api link navigates user to ach transfer page."""
     #     self.register.verifyACHTransferApiLink()
     #
-    # def test_021_register_click_digital_wallet_api_link(self):
+    # def test_021_verify_digital_wallet_api_link(self):
     #     """Verify digital wallet api link navigates user to digital wallet page."""
     #     self.register.verifyDigitalWalletApiLink()
     #
-    # def test_022_register_click_bank_account_link(self):
+    # def test_022_verify_bank_account_link(self):
     #     """Verify bank account linking api navigates user to bank account link page"""
     #     self.register.verifyBankAccountLinkingApiLink()
     #
-    # def test_023_register_click_kyc_kyb_identity_verification_link(self):
+    # def test_023_verify__kyc_kyb_identity_verification_link(self):
     #     """Verify user navigates to kyb kyc verification page."""
     #     self.register.verifyKYCIdentityVerificationLink()
     #
-    # def test_024_register_verify_already_have_account_text(self):
+    # def test_024_verify_already_have_account_text(self):
     #     """Verify page contains already have a sila account text."""
     #     self.register.verifyAlreadyHaveSilaAccounText()
 
-    # def test_025_register_click_login_link(self):
-    #     """Verify user is navigates to login page."""
+    # def test_025_verify_login_link(self):
+    #     """Verify user is able to navigates to login page."""
     #     self.register.verifyLoginLink()
 
-    def test_012_register_user_successfully(self):
-        """Verify user is able to register user successfully."""
+    def test_026_verify_user_navigates_to_invite_team_screen(self):
+        """Verify user is able to navigate from register screen to invite team screen."""
         self.register.clearForm()
         self.register.signUpForm(first_name, surname, company_name, user_email, phone, password,
                                  confirm_password)
@@ -157,23 +157,34 @@ class RegisterTests(unittest.TestCase):
         self.register.clickConfirmAccountButton()
         self.register.verifyUserNavigatesToInviteTeamScreen()
 
-    def test_0020_register_team_name_field_not_empty(self):
-        """Verify team name already exist error"""
-        self.register.verifyTeamNameFieldNotEmpty(company_name)
+    def test_027_verify_team_screen_text(self):
+        """Verify heading and paragraph on invite team member screen.."""
+        self.register.verifyContinueButtonState(False)
 
-    def test_0222_register_team_name_already_exists_validation(self):
+    def test_028_verify_team_name_already_exists_validation(self):
         """Verify team name already exist validation error"""
         self.register.VerifyTeamNameAlreadyExists()
         self.register.verifyContinueButtonState(False)
 
-    def test_0222_register_add_new_team_name(self):
+    def test_029_add_new_team_name(self):
         """Verify user is able to add new team."""
         self.register.addNewTeamName(team_name)
         self.register.verifyContinueButtonState(True)
 
-    def test_0220_register_invite_team_member(self):
+    def test_030_invite_already_registered_user_to_team(self):
+        """Verify user is not able to invite already registered member."""
+        self.register.verifyInviteAlreadyRegisteredUserValidation("test@gmail.com")
+
+    def test_031_invite_user_with_invalid_email(self):
+        """Verify user is not able to invite team member when email is invalid."""
+        self.register.verifyInviteUserWithInvalidEmail(email="test@")
+        self.register.verifyContinueButtonState(False)
+
+    def test_032_invite_team_member_successfully(self):
         """Verify user is able to invite team member from add team box."""
-        self.register.verifyTeamMemberInvitedSuccessfully(contractor_email)
+        self.register.verifyTeamMemberInvitedSuccessfully(email="test123@trr.com")
+
+
 
     # def test_0221_register_(self):
     #

@@ -11,6 +11,7 @@ Example:
 import os
 
 from selenium import webdriver
+from testcases.test_config import *
 
 
 class WebDriverFactory():
@@ -61,12 +62,12 @@ class WebDriverFactory():
         driver.maximize_window()
         # Loading browser with App URL
         if env == 'stage':
-            baseURL = "https://stageconsole.silamoney.com/login"
+            baseURL = stage_url
             driver.get(baseURL)
         elif env == 'prod':
-            baseURL = "https://console.silamoney.com/login"
+            baseURL = production_url
             driver.get(baseURL)
         else:
-            baseURL = "https://stageconsole.silamoney.com/login"
+            baseURL = stage_url
             driver.get(baseURL)
         return driver

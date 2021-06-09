@@ -1,6 +1,5 @@
 import time
 
-from selenium.webdriver.common.keys import Keys
 from base.selenium_driver import SeleniumDriver
 from testcases.message import *
 from selenium.webdriver.common.action_chains import ActionChains
@@ -12,7 +11,7 @@ class RegisterPage(SeleniumDriver):
         super().__init__(driver)
         self.driver = driver
 
-    # Locators
+    # locators
     url = "https://stageconsole.silamoney.com/register"
     _sila_main_logo = "//*[@id='main-logo']"
     _signup_to_move_money_heading = "//h1[contains(text(),'Sign up to move money with Sila.')]"
@@ -28,7 +27,7 @@ class RegisterPage(SeleniumDriver):
                                                   "for Sof')] "
     _already_have_a_sila_account_text = "//p[contains(text(),'Already have a Sila account?')]"
     _sign_up_link = "//span[contains(text(),'Sign up')]"
-    _login_link = "//span[contains(text(),'Login')]"
+    _login_link = "//span[contains(text(),'login')]"
     _login_page_heading = "//h2[contains(text(),'Log-in to the Console.')]"
     _privacy_link = "//a[contains(text(),'Privacy Policy')]"
     _redirect_privacy_page_heading = "//h1[contains(text(),'Privacy Policy')]"
@@ -66,9 +65,14 @@ class RegisterPage(SeleniumDriver):
     _send_invites_button = "//button[contains(text(),'Send Invites')]"
     _invitation_sent_message = "//div[@id='sila-app']/div/div/div/main/div/div/div/div/div/div/div[2]/div/form/div[3]/p"
     _continue_button = "//button[contains(text(),'Continue')]"
+    _invite_your_team_and_collaborate_heading = "//h3[contains(text(),'Invite your team and collaborate.')]"
+    _listing__text_1 = "//li[contains(text(),'Save time with faster onboarding')]"
+    _listing__text_2 = "//li[contains(text(),'Stay up to date with the latest features')]"
+    _listing_text_3 = "//li[contains(text(),'Organize communication with the Sila team')]"
+    _add_team_box_placeholder_text = "//label[contains(text(),'Add teammates by email address and use commas to s')]"
+    _welcome_screen_heading = '''//h1[contains(text(),"Welcome! Let's get started.")]'''
 
     # Selectors
-
     def getUrl(self):
         return self.driver.get(self.url)
 
@@ -101,14 +105,16 @@ class RegisterPage(SeleniumDriver):
         self.wait_for_element(self._team_field_heading)
         return self.get_text(self._team_field_heading)
 
-    def getTeamFieldText(self):
-        self.wait_for_element(self._add_team_name_field)
-        return self.get_text(self._add_team_name_field)
+    # def getTeamFieldText(self):
+    #     self.wait_for_element(self._add_team_name_field)
+    #     self.element_click(self._add_team_name_field)
+    #     return self.get_text(self._add_team_name_field)
 
     def getTeamNameValidationText(self):
         return self.get_text(self._team_name_already_exists_validation)
 
     def getTeamInvitationSentText(self):
+        self.wait_for_element(self._invitation_sent_message)
         return self.get_text(self._invitation_sent_message)
 
     # Actions
@@ -199,12 +205,17 @@ class RegisterPage(SeleniumDriver):
         self.send_keys(clear_field, self._add_team_name_field)
 
     def clickTeamNameValidationIcon(self):
-        self.wait_for_element(self._team_name_validation_icon)
-        self.element_click(self._team_name_validation_icon)
+        self.wait_for_element(self._team_name_validation_icon, 'css')
+        self.element_click(self._team_name_validation_icon, 'css')
 
-    def inviteTeamMember(self, memberEmail):
+    def enterTeamMemberEmail(self, email):
         self.element_click(self._add_team_mates_box)
-        self.send_keys(memberEmail, self._add_team_mates_box)
+        clear_field = Keys.CONTROL + "a" + Keys.DELETE
+        self.send_keys(clear_field, self._add_team_mates_box)
+        time.sleep(0.5)
+        self.send_keys(email, self._add_team_mates_box)
+
+    def clickSendInviteButton(self):
         self.wait_for_element(self._send_invites_button)
         self.element_click(self._send_invites_button)
 
@@ -241,6 +252,12 @@ class RegisterPage(SeleniumDriver):
     def addNewTeamName(self, teamName):
         self.clickTeamName()
         self.send_keys(teamName, self._add_team_name_field)
+        time.sleep(5)
+
+    def inviteTeamMember(self, email):
+        self.enterTeamMemberEmail(email)
+        self.clickSendInviteButton()
+        self.clickTeamPageContinueButton()
 
     # Assertions
     def verifyPageTitle(self):
@@ -335,9 +352,9 @@ class RegisterPage(SeleniumDriver):
         heading = self.getTeamFieldHeading()
         self.verify_text_match(heading, team_heading)
 
-    def verifyTeamNameFieldNotEmpty(self, name):
-        team_name = self.getTeamFieldText()
-        self.verify_text_match(team_name, name)
+    # def verifyTeamNameFieldNotEmpty(self, name):
+    #     team_name = self.getTeamFieldText()
+    #     self.verify_text_match(team_name, name)
 
     def VerifyTeamNameAlreadyExists(self):
         self.clickTeamNameValidationIcon()
@@ -345,13 +362,27 @@ class RegisterPage(SeleniumDriver):
         self.verify_text_match(text, team_name_already_exits)
 
     def verifyContinueButtonState(self, value=True):
+        self.web_scroll('down')
         if value == False:
             self.check_element_state(self._continue_button, element_name="continue button on team invite screen")
         else:
-            self.check_element_state(self._continue_button, value, element_name="continue button on team invite screen")
+            self.check_element_state(self._continue_button, value=True, element_name="continue button on team invite screen")
 
-    def verifyTeamMemberInvitedSuccessfully(self, memberEmail):
-        self.inviteTeamMember(memberEmail)
+    def verifyInviteAlreadyRegisteredUserValidation(self, alreadyRegisteredUserEmail):
+        self.enterTeamMemberEmail(alreadyRegisteredUserEmail)
+        time.sleep(2)
+        text = self.getTeamInvitationSentText()
+        self.verify_text_contains(text, email_already_registered)
+
+    def verifyInviteUserWithInvalidEmail(self, email):
+        self.enterTeamMemberEmail(email)
+        time.sleep(3)
+        text = self.getTeamInvitationSentText()
+        self.verify_text_contains(text, invalid_email_in_invite_team_member_box)
+
+    def verifyTeamMemberInvitedSuccessfully(self, email):
+        self.inviteTeamMember(email)
+        time.sleep(3)
         text = self.getTeamInvitationSentText()
         self.verify_text_match(text, invitation_sent_successfully)
 
