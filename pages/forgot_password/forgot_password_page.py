@@ -31,6 +31,9 @@ class ForgotPasswordPage(SeleniumDriver):
         self.send_keys(clear_field, self._user_email_field)
         self.send_keys(email, self._user_email_field)
 
+    def ClickForgotPasswordLink(self):
+        self.login.clickForgotPasswordLink()
+
     def clickSubmitButton(self):
         self.element_click(self._submit_button)
 
@@ -45,7 +48,7 @@ class ForgotPasswordPage(SeleniumDriver):
         self.verify_text_match(text, email_address_required)
 
     def verifyInvalidEmail(self):
-        self.regise.verifyEmailValidationMessage(email_type="invalid")
+        self.register.verifyEmailValidationMessage(email_type="invalid")
 
     def verifyForgotPasswordSuccessfully(self, email):
         self.forgotPassword(email)

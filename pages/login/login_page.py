@@ -2,6 +2,7 @@ import time
 
 from base.selenium_driver import SeleniumDriver
 from testcases.message import *
+from utilities.util import *
 
 
 class LoginPage(SeleniumDriver):
@@ -9,6 +10,7 @@ class LoginPage(SeleniumDriver):
     def __init__(self, driver):
         super().__init__(driver)
         self.driver = driver
+        self.utility = Util()
 
     # Locators
     _username_field = "//input[@id='loginForm.handle']"
@@ -19,7 +21,8 @@ class LoginPage(SeleniumDriver):
     _login_button = "//button[contains(text(),'Login')]"
     _username_field_validation_icon = ".fas"
     _username_empty_field_validation_message = "//div[contains(text(),'Username / Email Address is required')]"
-    _username_enter_special_character_validation_message = '''//div[contains(text(),"Can't use spaces or special characters and must be")]'''
+    _username_min_character_validation_message = '''//div[contains(text(),"Can't use spaces or special
+     characters and must be")]'''
     _password_field_validation_icon = ".ml-2:nth-child(2) > .fas"
     _password_empty_field_validation = "//div[contains(text(),'Password is required')]"
     _flex_error_message = ".fade > .d-flex"
@@ -36,7 +39,8 @@ class LoginPage(SeleniumDriver):
     def getUserNameValidationMessage(self):
         self.wait_for_element(self._username_field_validation_icon, 'css')
         self.element_click(self._username_field_validation_icon, 'css')
-        return self.get_text(self._username_enter_special_character_validation_message)
+        time.sleep(1)
+        return self.get_text(self._username_min_character_validation_message)
 
     def getPasswordEmptyFieldText(self):
         self.wait_for_element(self._password_field_validation_icon, 'css')
@@ -59,7 +63,7 @@ class LoginPage(SeleniumDriver):
         self.send_keys(UserPassword, self._password_field)
 
     def clickLoginButton(self):
-        time.sleep(5)
+        time.sleep(2)
         self.web_scroll('down')
         self.element_click(self._login_button)
 
@@ -73,6 +77,7 @@ class LoginPage(SeleniumDriver):
 
     # Method
     def login(self, userName="", UserPassword=""):
+        # userName = self.utility.get_data(userName)
         self.enterUserName(userName)
         self.enterPassword(UserPassword)
         self.clickLoginButton()
@@ -101,15 +106,37 @@ class LoginPage(SeleniumDriver):
 
     def verifyLoginWhenUsernameInvalid(self, userName, UserPassword):
         self.login(userName, UserPassword)
+        time.sleep(1)
         text = self.getInvalidUserNameOrPasswordErrorMessage()
         self.verify_text_contains(text, invalid_login)
 
     def verifyLoginWhenPasswordInvalid(self, userName, UserPassword):
+        time.sleep(2)
         self.login(userName, UserPassword)
+        time.sleep(1)
         text = self.getInvalidUserNameOrPasswordErrorMessage()
         self.verify_text_contains(text, invalid_password_attempt)
 
     def verifyLoginSuccessfully(self, userName, UserPassword):
+        # utility = Util()
+        # user = ''
+        # if user == 'owner':
+        #     username = utility.get_data(userName)
+        #     self.login(userName, UserPassword)
+        # elif user == 'manager':
+        #     username = utility.get_data(userName)
+        #     self.login(userName, UserPassword)
+        # elif user == 'dev':
+        #     username = utility.get_data(userName)
+        #     self.login(userName, UserPassword)
+        # elif user == 'contractor':
+        #     username = utility.get_data(userName)
+        #     self.login(userName, UserPassword)
+        # else:
+        #     username = utility.get_data(userName)
+        #     self.login(userName, UserPassword)
+        # userName = self.utility.get_data('admin')
+        # userName = self.utility.get_data(1)
         self.login(userName, UserPassword)
 
 

@@ -11,8 +11,9 @@ class LoginTests(unittest.TestCase):
     log = cl.customLogger(logging.DEBUG)
 
     @pytest.fixture(autouse=True)
-    def objectSetup(self, oneTimeSetUp):
+    def objectSetup(self, oneTest):
         self.login = LoginPage(self.driver)
+        self.utility = Util()
 
     def test_001_click_forgot_password_link(self):
         """Verify user is able to navigate to forgot password screen"""
@@ -32,12 +33,15 @@ class LoginTests(unittest.TestCase):
 
     def test_005_login_with_invalid_user_name(self):
         """Verify user is not able to login when enter invalid username"""
-        self.login.verifyLoginWhenUsernameInvalid("silaqaautomation+Ownerkilssqn07j52qsdfpj@gmail.com", password)
+        invalid_user = name + "test" + "@mail.com"
+        self.login.verifyLoginWhenUsernameInvalid(invalid_user, password)
 
     def test_006_login_with_invalid_password(self):
         """Verify user is not able to login when enter invalid username"""
-        self.login.verifyLoginWhenPasswordInvalid("silaqaautomation+Ownerkilqn07j52qsdfpj@gmail.com", invalid_password)
+        # admin = self.utility.get_data(1)
+        self.login.verifyLoginWhenPasswordInvalid("silaqa002@mailinator.com", invalid_password)
 
     def test_007_login_successfully(self):
-        """Verify user is not able to login when enter invalid username"""
-        self.login.verifyLoginSuccessfully(user_email, password)
+        """Verify user is able to login successfully"""
+        # email = self.utility.get_data(userName='testqa')
+        self.login.verifyLoginSuccessfully("silaqa002@mailinator.com", password)

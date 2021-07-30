@@ -3,7 +3,6 @@ from selenium.webdriver.common.keys import Keys
 # keyboard keys
 clear_field = Keys.CONTROL + "a" + Keys.DELETE
 
-
 sign_up_page_title = "Sign Up | Sila API"
 login_page_heading = "Log-in to the Console."
 forgot_password_page_heading = "Forgot password?"
@@ -22,10 +21,10 @@ team_name_already_exits = "Team name already exists."
 already_have_a_sila_account = "Already have a Sila account? login"
 invitation_sent_successfully = "Invites successfully sent!"
 email_already_registered = "This email is already registered:"
-invalid_email_in_invite_team_member_box= "At least one or more email addresses are invalid."
+invalid_email_in_invite_team_member_box = "At least one or more email addresses are invalid."
 invalid_login = "Invalid login, please try again."
 invalid_password_attempt = "Your account will be temporarily locked after 4 more unsuccessful login attempts."
-
+welcome_screen = "Welcome! Let's get started."
 
 # login
 empty_user_name = "Username / Email Address is required"
@@ -33,12 +32,11 @@ user_name_validation = "Can't use spaces or special characters and must be at le
 empty_password = "Password is required"
 
 # logout
-popup_text = 'Select "Logout" below if you are ready to end your'
+popup_text = 'Select "Logout" below if you are ready to end your current session.'
 popup_title = "Ready to Leave?"
 
 # forgot password
 email_address_required = "Email Address is required"
-
 
 #  Heading after page redirect by clicking on links
 redirected_privacy_page_heading = "Privacy Policy"
@@ -47,4 +45,8 @@ redirected_sdk_agreement_page_heading = "SOFTWARE DEVELOPMENT KIT LICENSE AGREEM
 redirected_ach_page_heading = "Transfer money and initiate ACH transfers fast using the Sila API"
 redirected_digital_wallet_api_page_heading = "Our Wallet API links any U.S. bank account via API for in-app payments."
 redirected_account_linking_page_heading = "Link bank accounts and transfer money fast using the Sila API"
-redirected_kyc_kyb_identity_verification_page_heading= "Banking, Digital Wallet & ACH Payments API for Software Teams"
+redirected_kyc_kyb_identity_verification_page_heading = "Banking, Digital Wallet & ACH Payments API for Software Teams"
+
+
+# Teams
+team_modal_box_title = "Create new team"

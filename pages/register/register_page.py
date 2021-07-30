@@ -12,7 +12,7 @@ class RegisterPage(SeleniumDriver):
         self.driver = driver
 
     # locators
-    url = "https://stageconsole.silamoney.com/register"
+    _register_url = ""
     _sila_main_logo = "//*[@id='main-logo']"
     _signup_to_move_money_heading = "//h1[contains(text(),'Sign up to move money with Sila.')]"
     _ach_transfer_link = "//a[contains(text(),'ACH Transfer API')]"
@@ -27,7 +27,7 @@ class RegisterPage(SeleniumDriver):
                                                   "for Sof')] "
     _already_have_a_sila_account_text = "//p[contains(text(),'Already have a Sila account?')]"
     _sign_up_link = "//span[contains(text(),'Sign up')]"
-    _login_link = "//span[contains(text(),'login')]"
+    _login_link = "//span[contains(text(),'Login')]"
     _login_page_heading = "//h2[contains(text(),'Log-in to the Console.')]"
     _privacy_link = "//a[contains(text(),'Privacy Policy')]"
     _redirect_privacy_page_heading = "//h1[contains(text(),'Privacy Policy')]"
@@ -70,12 +70,10 @@ class RegisterPage(SeleniumDriver):
     _listing__text_2 = "//li[contains(text(),'Stay up to date with the latest features')]"
     _listing_text_3 = "//li[contains(text(),'Organize communication with the Sila team')]"
     _add_team_box_placeholder_text = "//label[contains(text(),'Add teammates by email address and use commas to s')]"
+    _skip_to_account_button = "// button[contains(text(), 'Skip to account creation')]"
     _welcome_screen_heading = '''//h1[contains(text(),"Welcome! Let's get started.")]'''
 
     # Selectors
-    def getUrl(self):
-        return self.driver.get(self.url)
-
     def getInvalidPhoneText(self):
         return self.get_text(self._invalid_phone_validation)
 
@@ -92,6 +90,7 @@ class RegisterPage(SeleniumDriver):
         return self.get_text(self._password_lookalike_email_validation)
 
     def getInvalidEmailText(self):
+        self.wait_for_element(self._invalid_email)
         return self.get_text(self._invalid_email)
 
     def getAlreadyHaveSilaAccountText(self):
@@ -105,12 +104,17 @@ class RegisterPage(SeleniumDriver):
         self.wait_for_element(self._team_field_heading)
         return self.get_text(self._team_field_heading)
 
+    def getWelcomeScreenText(self):
+        self.wait_for_element(self._welcome_screen_heading)
+        return self.get_text(self._welcome_screen_heading)
+
     # def getTeamFieldText(self):
     #     self.wait_for_element(self._add_team_name_field)
     #     self.element_click(self._add_team_name_field)
     #     return self.get_text(self._add_team_name_field)
 
     def getTeamNameValidationText(self):
+        self.wait_for_element(self._team_name_already_exists_validation)
         return self.get_text(self._team_name_already_exists_validation)
 
     def getTeamInvitationSentText(self):
@@ -129,16 +133,19 @@ class RegisterPage(SeleniumDriver):
     def enterFirstName(self, firstName):
         self.wait_for_element(self._first_name_field)
         self.element_click(self._first_name_field)
+        self.send_keys(clear_field, self._first_name_field)
         self.send_keys(firstName, self._first_name_field)
         self.log.info("Entered firstName: " + firstName)
 
     def enterSurName(self, surName):
         self.element_click(self._surname_field)
+        self.send_keys(clear_field, self._surname_field)
         self.send_keys(surName, self._surname_field)
         self.log.info("Entered lastName: " + surName)
 
     def enterCompanyName(self, companyName):
         self.element_click(self._company_name_field)
+        self.send_keys(clear_field, self._company_name_field)
         self.send_keys(companyName, self._company_name_field)
         self.log.info("Entered companyName: " + companyName)
         time.sleep(1)
@@ -149,22 +156,26 @@ class RegisterPage(SeleniumDriver):
 
     def enterWorkEmail(self, email):
         self.element_click(self._work_email_field)
+        self.send_keys(clear_field, self._work_email_field)
         self.send_keys(email, self._work_email_field)
         self.log.info("Entered email: " + email)
 
     def enterWorkPhone(self, phone):
         self.element_click(self._work_phone_field)
+        self.send_keys(clear_field, self._work_phone_field)
         self.send_keys(phone, self._work_phone_field)
         self.log.info("Entered phone: " + phone)
 
     def enterPassword(self, password):
         self.element_click(self._password_field)
+        self.send_keys(clear_field, self._password_field)
         self.send_keys(password, self._password_field)
         self.log.info("Entered password: " + password)
         self.web_scroll("down")
 
     def enterConfirmPassword(self, confirmPassword):
         self.element_click(self._confirm_password_field)
+        self.send_keys(clear_field, self._confirm_password_field)
         self.send_keys(confirmPassword, self._confirm_password_field)
         self.log.info("Entered confirmPassword: " + confirmPassword)
 
@@ -190,7 +201,7 @@ class RegisterPage(SeleniumDriver):
 
     def clickConfirmPasswordValidationIcon(self):
         self.wait_for_element(self._confirm_password_icon, 'css')
-        self.element_click(self._password_icon, 'css')
+        self.element_click(self._confirm_password_icon, 'css')
         self.log.info("Clicked on confirm password validation icon")
 
     def clickPhoneValidationIcon(self):
@@ -201,7 +212,6 @@ class RegisterPage(SeleniumDriver):
     def clickTeamName(self):
         self.wait_for_element(self._add_team_name_field)
         self.element_click(self._add_team_name_field)
-        clear_field = Keys.CONTROL + "a" + Keys.DELETE
         self.send_keys(clear_field, self._add_team_name_field)
 
     def clickTeamNameValidationIcon(self):
@@ -210,7 +220,6 @@ class RegisterPage(SeleniumDriver):
 
     def enterTeamMemberEmail(self, email):
         self.element_click(self._add_team_mates_box)
-        clear_field = Keys.CONTROL + "a" + Keys.DELETE
         self.send_keys(clear_field, self._add_team_mates_box)
         time.sleep(0.5)
         self.send_keys(email, self._add_team_mates_box)
@@ -222,13 +231,18 @@ class RegisterPage(SeleniumDriver):
     def clickTeamPageContinueButton(self):
         self.element_click(self._continue_button)
 
+    def clickSkipToAccountButton(self):
+        self.web_scroll('down')
+        self.wait_for_element(self._skip_to_account_button)
+        self.element_click(self._skip_to_account_button)
+
     # Methods
     def signUpForm(self, firstName='', surName='', companyName='', email='', phone='',
                    password='', confirmPassword=''):
+        self.web_scroll("up")
         self.enterFirstName(firstName)
         self.enterSurName(surName)
         if companyName == '':
-            clear_field = Keys.CONTROL + "a" + Keys.DELETE
             self.send_keys(clear_field, self._company_name_field)
         else:
             self.enterCompanyName(companyName)
@@ -237,31 +251,30 @@ class RegisterPage(SeleniumDriver):
         self.enterPassword(password)
         self.enterConfirmPassword(confirmPassword)
 
-    def clearForm(self):
-        self.web_scroll("up")
-        clear_field = Keys.CONTROL + "a" + Keys.DELETE
-        self.send_keys(clear_field, self._first_name_field)
-        self.send_keys(clear_field, self._surname_field)
-        self.send_keys(clear_field, self._company_name_field)
-        self.send_keys(clear_field, self._work_email_field)
-        self.send_keys(clear_field, self._work_phone_field)
-        self.send_keys(clear_field, self._password_field)
-        self.send_keys(clear_field, self._confirm_password_field)
-        time.sleep(2)
+    def registerUsers(self, firstName='', surName='', companyName='', email='', phone='',
+                        password='', confirmPassword=''):
+        self.driver.get(self._register_url)
+        time.sleep(5)
+        self.signUpForm()
+        self.clickTermsCheckbox()
+        self.clickConfirmAccountButton()
 
     def addNewTeamName(self, teamName):
         self.clickTeamName()
         self.send_keys(teamName, self._add_team_name_field)
-        time.sleep(5)
+        time.sleep(2)
 
     def inviteTeamMember(self, email):
         self.enterTeamMemberEmail(email)
         self.clickSendInviteButton()
-        self.clickTeamPageContinueButton()
+
+    def welcome_screen_text(self):
+        text = self.getWelcomeScreenText()
+        self.verify_text_match(text, welcome_screen)
 
     # Assertions
     def verifyPageTitle(self):
-        time.sleep(10)
+        time.sleep(5)
         title = self.get_title()
         self.verify_text_match(title, sign_up_page_title)
         self.log.info("User is on signup page")
@@ -357,6 +370,7 @@ class RegisterPage(SeleniumDriver):
     #     self.verify_text_match(team_name, name)
 
     def VerifyTeamNameAlreadyExists(self):
+        self.web_scroll('up')
         self.clickTeamNameValidationIcon()
         text = self.getTeamNameValidationText()
         self.verify_text_match(text, team_name_already_exits)
@@ -366,7 +380,8 @@ class RegisterPage(SeleniumDriver):
         if value == False:
             self.check_element_state(self._continue_button, element_name="continue button on team invite screen")
         else:
-            self.check_element_state(self._continue_button, value=True, element_name="continue button on team invite screen")
+            self.check_element_state(self._continue_button, value=True,
+                                     element_name="continue button on team invite screen")
 
     def verifyInviteAlreadyRegisteredUserValidation(self, alreadyRegisteredUserEmail):
         self.enterTeamMemberEmail(alreadyRegisteredUserEmail)
@@ -386,10 +401,18 @@ class RegisterPage(SeleniumDriver):
         text = self.getTeamInvitationSentText()
         self.verify_text_match(text, invitation_sent_successfully)
 
+    def verifyWelcomeScreen(self):
+        self.clickTeamPageContinueButton()
+        self.clickSkipToAccountButton()
+        self.welcome_screen_text()
+
     def verifyConfirmEmail(self, emailPrefix):
         self.log.info("Email verification started")
         get_url = self.verify_email_confirmation(emailPrefix)
         get_url = self.driver.get(get_url)
         time.sleep(5)
         self.log.info(get_url)
-        self.verify_text_match(get_url, "Sign Up | Sila API")
+        text = self.getWelcomeScreenText()
+        self.verify_text_match(text, welcome_screen)
+        self.log.info("test is user")
+        self.driver.quit()

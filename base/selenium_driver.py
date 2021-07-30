@@ -5,7 +5,7 @@ import time
 import allure
 from allure_commons.types import AttachmentType
 import base64
-
+import utilities.custom_logger as cl
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -14,7 +14,6 @@ from selenium.common.exceptions import *
 from googleapiclient.discovery import build
 from httplib2 import Http
 from oauth2client import file, client, tools
-import utilities.custom_logger as cl
 
 
 class SeleniumDriver:
@@ -234,7 +233,7 @@ class SeleniumDriver:
             self.screenShot(element + ' ' + 'not found')
             raise
 
-    def element_presence_check(self, locator, byType):
+    def element_presence_check(self, locator, byType="xpath"):
         """
         Check if element is present
         """
@@ -250,7 +249,6 @@ class SeleniumDriver:
                 return False
         except:
             self.log.info("Element not found")
-            return False
 
     def wait_for_element(self, locator, locatorType="xpath",
                          timeout=30, pollFrequency=1):
@@ -360,13 +358,18 @@ class SeleniumDriver:
             for message in messages:
                 msg = service.users().messages().get(userId='me', id=message['id']).execute()
                 data = msg['payload']['body']['data']
-                decoded_data = base64.b64decode(data)
+                decoded_data = base64.urlsafe_b64decode(data)
                 decoded_data = decoded_data.decode('utf-8')
                 print(msg['snippet'])
                 print(decoded_data)
                 import re
-                url = (re.search("(?P<url>https?://[^\s]+)", decoded_data).group("url"))
-                return url
+                # url = (re.search("(?P<url>https?://[^\s]+)", decoded_data).group("url"))
+                url = (re.findall("(?P<url>https?://[^\s]+)", decoded_data))
+                # print(test)
+                console = "account/confirm/"
+                strings_with_substring = [string for string in url if console in string]
+                strings_with_substring = strings_with_substring[0]
+                return strings_with_substring
 
     def check_element_state(self, locator="", locatorType="xpath", value=False, element_name=''):
         """
@@ -403,11 +406,23 @@ class SeleniumDriver:
                 # switch on to new child window
                 self.driver.switch_to.window(window_after)
                 time.sleep(1)
+                element = self.get_element(locator1, locatorType)
+                assert element is not None, ("Failed to get locator on new window", self.driver.close(),
+                                             self.driver.switch_to.window(window_before))
                 text = self.get_text(locator1, locatorType)
                 self.verify_text_match(text, expected_text)
                 self.driver.close()
                 self.driver.switch_to.window(window_before)
                 time.sleep(1)
+                # if element == None:
+                #     self.driver.close()
+                #     self.driver.switch_to.window(window_before)
+                # else:
+                #     text = self.get_text(locator1, locatorType)
+                #     self.verify_text_match(text, expected_text)
+                #     self.driver.close()
+                #     self.driver.switch_to.window(window_before)
+                #     time.sleep(1)
         except AssertionError as msg:
             self.log.info(msg)
             name = datetime.datetime.today().strftime('%Y-%m-%d-%M-%S')

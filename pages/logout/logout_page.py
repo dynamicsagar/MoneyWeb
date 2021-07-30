@@ -1,5 +1,6 @@
 import time
 
+from pages.home.home_page import HomePage
 from base.selenium_driver import SeleniumDriver
 from testcases.message import *
 
@@ -9,10 +10,9 @@ class LogoutPage(SeleniumDriver):
     def __init__(self, driver):
         super().__init__(driver)
         self.driver = driver
+        self.home = HomePage(driver)
 
     # Locators
-    _menu_icon = "//div[@id='user-menu']/a/span/span[1]"
-    _logout_link = "//div[@id='user-menu']/div/a[3]"
     _close_icon = "//div[@id='logout-modal']/div/div/button/span"
     _cancel_button = "//button[contains(text(),'Cancel')]"
     _logout_button = "//button[contains(text(),'Logout')]"
@@ -20,18 +20,12 @@ class LogoutPage(SeleniumDriver):
     _popup_title = "//div[@id='logout-modal-title']"
 
     def getPopupTitle(self):
+        self.wait_for_element(self._popup_title)
         return self.get_text(self._popup_title)
 
     def getPopText(self):
+        self.wait_for_element(self._popup_text)
         return self.get_text(self._popup_text)
-
-    def clickMenuIcon(self):
-        self.wait_for_element(self._menu_icon)
-        self.element_click(self._menu_icon)
-
-    def clickLogoutLink(self):
-        self.wait_for_element(self._logout_link)
-        self.element_click(self._logout_link)
 
     def clickCloseIcon(self):
         self.wait_for_element(self._close_icon)
@@ -45,14 +39,17 @@ class LogoutPage(SeleniumDriver):
         self.wait_for_element(self._logout_button)
         self.element_click(self._logout_button)
 
+    def clickLogoutLinkFromUserMenu(self):
+        self.home.clickMenuIcon()
+        self.home.clickLogoutLink()
+
     def logout(self):
-        self.clickMenuIcon()
-        self.clickLogoutLink()
+        self.clickLogoutLinkFromUserMenu()
         self.clickLogoutButton()
 
     # Assertions
-
     def verifyPopupTitle(self):
+        self.clickLogoutLinkFromUserMenu()
         text = self.getPopupTitle()
         self.verify_text_match(text, popup_title)
 
@@ -62,11 +59,12 @@ class LogoutPage(SeleniumDriver):
 
     def verifyCloseIcon(self):
         self.clickCloseIcon()
-        self.is_element_displayed(self._menu_icon)
+        self.is_element_displayed(self.home._user_menu_icon)
 
     def verifyCancelButton(self):
+        self.clickLogoutLinkFromUserMenu()
         self.clickCancelButton()
-        self.is_element_displayed(self._menu_icon)
+        self.is_element_displayed(self.home._user_menu_icon)
 
     def verifyLogoutSuccessfully(self):
         self.logout()

@@ -6,6 +6,7 @@ from pages.logout.logout_page import LogoutPage
 
 
 @pytest.mark.run(order=3)
+@pytest.mark.usefixtures("oneTimeSetUp")
 class LogoutTests(unittest.TestCase):
     log = cl.customLogger(logging.DEBUG)
 
@@ -17,7 +18,7 @@ class LogoutTests(unittest.TestCase):
         """Verify logout popup title"""
         self.logout.verifyPopupTitle()
 
-    def test_002_verify_logout_popup_test(self):
+    def test_002_verify_logout_popup_text(self):
         """Verify logout popup text."""
         self.logout.verifyPopupText()
 

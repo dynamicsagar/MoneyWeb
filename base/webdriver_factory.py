@@ -13,7 +13,6 @@ import os
 from selenium import webdriver
 from testcases.test_config import *
 
-
 class WebDriverFactory():
 
     def __init__(self, browser):
@@ -66,6 +65,9 @@ class WebDriverFactory():
             driver.get(baseURL)
         elif env == 'prod':
             baseURL = production_url
+            driver.get(baseURL)
+        elif env == 'dev':
+            baseURL = dev_url
             driver.get(baseURL)
         else:
             baseURL = stage_url

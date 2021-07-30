@@ -1,7 +1,10 @@
 import unittest
 import xmlrunner
 
-from testcases.test001_login_test import LoginTests
+
+from testcases.register.test_register import RegisterTests
+from testcases.login.test_login import LoginTests
+from testcases.logout.test_logout import LogoutTests
 from testcases.generate_report import GenerateReport
 
 
@@ -18,7 +21,9 @@ def create_suite(classes):
 def run_unit_tests():
     runner = xmlrunner.XMLTestRunner(verbosity=2)
     classes = [
+        RegisterTests,
         LoginTests,
+        LogoutTests,
         GenerateReport
     ]
     runner.run(create_suite(classes))
