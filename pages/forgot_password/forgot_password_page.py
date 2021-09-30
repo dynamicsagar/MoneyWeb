@@ -45,10 +45,10 @@ class ForgotPasswordPage(SeleniumDriver):
     # Assertions
     def VerifyEmptyEmailValidation(self):
         text = self.getEmptyEmailAddressValidationText()
-        self.verify_text_match(text, email_address_required)
+        self.verify_text_match(text, EMAIL_ADDRESS_REQUIRED_MESSAGE)
 
     def verifyInvalidEmail(self):
-        self.register.verifyEmailValidationMessage(email_type="invalid")
+        self.register.verify_email_validation_message(email_type="invalid")
 
     def verifyForgotPasswordSuccessfully(self, email):
         self.forgotPassword(email)

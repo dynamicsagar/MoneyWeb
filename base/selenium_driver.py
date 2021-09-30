@@ -1,19 +1,25 @@
 import datetime
 import os
 import logging
+import pickle
 import time
+
 import allure
 from allure_commons.types import AttachmentType
 import base64
 import utilities.custom_logger as cl
+import re
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import *
 from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
 from httplib2 import Http
 from oauth2client import file, client, tools
+from utilities.gmail import getEmails
 
 
 class SeleniumDriver:
@@ -329,26 +335,57 @@ class SeleniumDriver:
         else:
             self.log.info("### VERIFICATION CONTAINS !!! Actual text matched with the expected text.")
 
-    def verify_email_confirmation(self, name):
+    def verify_email_confirmation(self, name, flow):
         """
         Call gmail api to fetch Gmail inbox to get registered email.
         Parameters:
             name: name after plus in the registered user email
+            :param flow: it defines user is validating email from which flow.
 
         """
         SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
-        store = file.Storage('token.json')
-        creds = store.get()
-        path = os.path.abspath("./credentials.json")
-        if not creds or creds.invalid:
-            flow = client.flow_from_clientsecrets(path,
-                                                  SCOPES)
-            creds = tools.run_flow(flow, store)
-        service = build('gmail', 'v1', http=creds.authorize(Http()))
+        # store = file.Storage('token.json')
+        # creds = store.get()
+        # path = os.path.abspath("./credentials.json")
+        # if not creds or creds.invalid:
+        #     flow = client.flow_from_clientsecrets(path,
+        #                                           SCOPES)
+        #     creds = tools.run_flow(flow, store)
+        # service = build('gmail', 'v1', http=creds.authorize(Http()))
+
+        creds = None
+
+        # The file token.pickle contains the user access token.
+        # Check if it exists
+        if os.path.exists('token.pickle'):
+            # Read the token from the file and store it in the variable creds
+            with open('token.pickle', 'rb') as token:
+                creds = pickle.load(token)
+
+        # If credentials are not available or are invalid, ask the user to log in.
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file('./credentials.json', SCOPES)
+                creds = flow.run_local_server(port=0)
+
+            # Save the access token in token.pickle file for the next run
+            with open('token.pickle', 'wb') as token:
+                pickle.dump(creds, token)
+        service = build('gmail', 'v1', credentials=creds)
 
         # Call the Gmail API to fetch INBOX
-        results = service.users().messages().list(userId='me', q=name,
+        if flow == 'register':
+            subject_line = "Confirm Sila Account"
+        elif flow == 'reset_password':
+            subject_line = "Sila Password Reset"
+        else:
+            subject_line = "Sila Invitation"
+        search = 'to:' + name + ',subject:'+subject_line
+        results = service.users().messages().list(userId='me', q=search,
                                                   labelIds=['INBOX']).execute()
+        print(results)
         messages = results.get('messages', [])
 
         if not messages:
@@ -362,14 +399,81 @@ class SeleniumDriver:
                 decoded_data = decoded_data.decode('utf-8')
                 print(msg['snippet'])
                 print(decoded_data)
-                import re
-                # url = (re.search("(?P<url>https?://[^\s]+)", decoded_data).group("url"))
                 url = (re.findall("(?P<url>https?://[^\s]+)", decoded_data))
-                # print(test)
-                console = "account/confirm/"
-                strings_with_substring = [string for string in url if console in string]
-                strings_with_substring = strings_with_substring[0]
-                return strings_with_substring
+                if flow == 'register' :
+                    console = "account/confirm/"
+                    strings_with_substring = [string for string in url if console in string]
+                    strings_with_substring = strings_with_substring[0]
+                    return strings_with_substring
+                elif flow == 'reset_password':
+                    console = "/account/reset_password/"
+                    strings_with_substring = [string for string in url if console in string]
+                    strings_with_substring = strings_with_substring[0]
+                    return strings_with_substring
+                elif flow == "invitation":
+                    console = "/invitation/"
+                    strings_with_substring = [string for string in url if console in string]
+                    strings_with_substring = strings_with_substring[0]
+                    return strings_with_substring
+
+    def get_mfa_code(self, name):
+        """
+        Call gmail api to fetch Gmail inbox to get registered email.
+        Parameters:
+            name: name after plus in the registered user email
+            :param flow: it defines user is validating email from which flow.
+
+        """
+        # SCOPES = 'https://www.googleapis.com/auth/gmail.readonly'
+        # store = file.Storage('token.json')
+        # creds = store.get()
+        # path = os.path.abspath("./credentials.json")
+        # if not creds or creds.invalid:
+        #     flow = client.flow_from_clientsecrets(path,
+        #                                           SCOPES)
+        #     creds = tools.run_flow(flow, store)
+        # service = build('gmail', 'v1', http=creds.authorize(Http()))
+
+        creds = None
+
+        # The file token.pickle contains the user access token.
+        # Check if it exists
+        if os.path.exists('token.pickle'):
+            # Read the token from the file and store it in the variable creds
+            with open('token.pickle', 'rb') as token:
+                creds = pickle.load(token)
+
+        # If credentials are not available or are invalid, ask the user to log in.
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file('./credentials.json', SCOPES)
+                creds = flow.run_local_server(port=0)
+
+            # Save the access token in token.pickle file for the next run
+            with open('token.pickle', 'wb') as token:
+                pickle.dump(creds, token)
+        service = build('gmail', 'v1', credentials=creds)
+
+        # Call the Gmail API to fetch INBOX
+        search = 'to:' + name + ',subject:Sila Console Verification Code'
+        results = service.users().messages().list(maxResults=1, userId='me', q=search,
+                                                  labelIds=['INBOX']).execute()
+        messages = results.get('messages', [])
+        if not messages:
+            print("No messages found.")
+        else:
+            print("Message snippets:")
+            for message in messages:
+                msg = service.users().messages().get(userId='me', id=message['id']).execute()
+                message = (msg['snippet'])
+                print(message)
+                mfa_code = re.split('[:]', message)
+                mfa_code = mfa_code[1]
+                mfa_code = mfa_code[1:7]
+                print(mfa_code)
+                return mfa_code
 
     def check_element_state(self, locator="", locatorType="xpath", value=False, element_name=''):
         """

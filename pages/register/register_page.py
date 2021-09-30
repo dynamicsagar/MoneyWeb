@@ -1,8 +1,9 @@
 import time
 
 from base.selenium_driver import SeleniumDriver
-from testcases.message import *
 from selenium.webdriver.common.action_chains import ActionChains
+from testcases.locators import *
+from testcases.message import *
 
 
 class RegisterPage(SeleniumDriver):
@@ -11,408 +12,358 @@ class RegisterPage(SeleniumDriver):
         super().__init__(driver)
         self.driver = driver
 
-    # locators
-    _register_url = ""
-    _sila_main_logo = "//*[@id='main-logo']"
-    _signup_to_move_money_heading = "//h1[contains(text(),'Sign up to move money with Sila.')]"
-    _ach_transfer_link = "//a[contains(text(),'ACH Transfer API')]"
-    _redirect_ach_transfer_page_heading = "//p[contains(text(),'Transfer money and initiate ACH transfers fast usi')]"
-    _digital_wallet_api_link = "//a[contains(text(),'Digital Wallet API')]"
-    _redirect_digital_wallet_page_heading = "//p[contains(text(),'Our Wallet API links any U.S. bank account via API')]"
-    _bank_account_linking_api_link = "//a[contains(text(),'Bank Account Linking API')]"
-    _redirect_bank_account_linking_page_heading = "//p[contains(text(),'Link bank accounts and transfer money fast " \
-                                                  "using t')] "
-    _kyc_kyb_identity_verification_api_link = "//a[contains(text(),'KYC & KYB Identity Verification API')]"
-    _redirect_kyb_kyc_verification_page_heading = "//p[contains(text(),'Banking, Digital Wallet & ACH Payments API " \
-                                                  "for Sof')] "
-    _already_have_a_sila_account_text = "//p[contains(text(),'Already have a Sila account?')]"
-    _sign_up_link = "//span[contains(text(),'Sign up')]"
-    _login_link = "//span[contains(text(),'Login')]"
-    _login_page_heading = "//h2[contains(text(),'Log-in to the Console.')]"
-    _privacy_link = "//a[contains(text(),'Privacy Policy')]"
-    _redirect_privacy_page_heading = "//h1[contains(text(),'Privacy Policy')]"
-    _terms_of_service_link = "//a[contains(text(),'Terms of Service')]"
-    _redirect_terms_page_heading = "//h1[contains(text(),'Terms of Service')]"
-    _sdk_license_agreement_link = "//a[contains(text(),'SDK License Agreement')]"
-    _redirect_sdk_page_heading = "//h1[contains(text(),'SOFTWARE DEVELOPMENT KIT LICENSE AGREEMENT')]"
-    _first_name_field = "//input[@id='registerForm.first_name']"
-    _surname_field = "//input[@id='registerForm.surname']"
-    _company_name_field = "//body/div[@id='sila-app']/div[1]/div[1]/div[1]/main[1]/div[1]/div[1]/div[1]/div[1]/div[" \
-                          "1]/div[1]/div[2]/div[1]/form[1]/div[2]/div[1]/div[1]/div[1]/input[1] "
-    _select_company_name = "//a[@id='registerForm.company_name-item-0']"
-    _work_email_field = "//input[@id='registerForm.email']"
-    _work_phone_field = "//input[@id='registerForm.phone']"
-    _password_field = "//input[@id='registerPasswordForm.password']"
-    _confirm_password_field = "//input[@id='registerPasswordForm.confirmPassword']"
-    _terms_checkbox = "//input[@name='privacy']"
-    _create_account_button = "//button[contains(text(),'CREATE ACCOUNT')]"
-    _email_icon = ".email .fas"
-    _invalid_email = "//div[contains(text(),'Invalid email address')]"
-    _phone_icon = ".phone:nth-child(4) .fas"
-    _invalid_phone_validation = "//div[contains(text(),'Invalid phone number')]"
-    _password_icon = ".password:nth-child(5) .fas"
-    _confirm_password_icon = ".password:nth-child(6) .fas"
-    _password_min_length_validation = "//div[contains(text(),'Minimum of 8 characters required.')]"
-    _password_max_length_validation = "//div[contains(text(),'Provide a shorter password.')]"
-    _password_mismatch_validation = "//div[contains(text(),'Re-enter your password confirmation so it matches ')]"
-    _password_lookalike_email_validation = '''//div[contains(text(),"Password can't contain your username or email.")]'''
-    _team_field_heading = "//h2[contains(text(),'Give your team a name.')]"
-    _team_field_label = "//label[contains(text(),'Team Name')]"
-    _add_team_name_field = "//input[@id='InviteTeamMembers.team_name']"
-    _team_name_validation_icon = ".fas"
-    _team_name_already_exists_validation = "//div[contains(text(),'Team name already exists.')]"
-    _add_team_mates_box = "//textarea[@id='InviteTeamMembers.emails']"
-    _send_invites_button = "//button[contains(text(),'Send Invites')]"
-    _invitation_sent_message = "//div[@id='sila-app']/div/div/div/main/div/div/div/div/div/div/div[2]/div/form/div[3]/p"
-    _continue_button = "//button[contains(text(),'Continue')]"
-    _invite_your_team_and_collaborate_heading = "//h3[contains(text(),'Invite your team and collaborate.')]"
-    _listing__text_1 = "//li[contains(text(),'Save time with faster onboarding')]"
-    _listing__text_2 = "//li[contains(text(),'Stay up to date with the latest features')]"
-    _listing_text_3 = "//li[contains(text(),'Organize communication with the Sila team')]"
-    _add_team_box_placeholder_text = "//label[contains(text(),'Add teammates by email address and use commas to s')]"
-    _skip_to_account_button = "// button[contains(text(), 'Skip to account creation')]"
-    _welcome_screen_heading = '''//h1[contains(text(),"Welcome! Let's get started.")]'''
-
     # Selectors
-    def getInvalidPhoneText(self):
-        return self.get_text(self._invalid_phone_validation)
+    def get_max_length_validation_text(self):
+        self.wait_for_element(flex_validation_message)
+        return self.get_text(flex_validation_message)
 
-    def getMinPasswordValidationText(self):
-        return self.get_text(self._password_min_length_validation)
+    def get_invalid_phone_text(self):
+        return self.get_text(invalid_phone_validation)
 
-    def getMaxPasswordValidationText(self):
-        return self.get_text(self._password_max_length_validation)
+    def get_min_password_validation_text(self):
+        return self.get_text(password_min_length_validation)
 
-    def getPasswordMisMatchValidationText(self):
-        return self.get_text(self._password_mismatch_validation)
+    def get_max_password_validation_text(self):
+        return self.get_text(password_max_length_validation)
 
-    def getPasswordLookAlikeEmailValidationText(self):
-        return self.get_text(self._password_lookalike_email_validation)
+    def get_password_mismatch_validation_text(self):
+        return self.get_text(password_mismatch_validation)
 
-    def getInvalidEmailText(self):
-        self.wait_for_element(self._invalid_email)
-        return self.get_text(self._invalid_email)
+    def get_password_look_alike_email_validation_text(self):
+        return self.get_text(password_lookalike_email_validation)
 
-    def getAlreadyHaveSilaAccountText(self):
-        return self.get_text(self._already_have_a_sila_account_text)
+    def get_invalid_email_text(self):
+        self.wait_for_element(invalid_email)
+        return self.get_text(invalid_email)
 
-    def getLoginPageHeading(self):
-        self.wait_for_element(self._login_page_heading)
-        return self.get_text(self._login_page_heading)
+    def get_already_have_sila_Account_text(self):
+        return self.get_text(already_have_a_sila_account_text)
 
-    def getTeamFieldHeading(self):
-        self.wait_for_element(self._team_field_heading)
-        return self.get_text(self._team_field_heading)
+    def get_login_page_heading(self):
+        self.wait_for_element(LOGIN_PAGE_HEADING)
+        return self.get_text(LOGIN_PAGE_HEADING)
 
-    def getWelcomeScreenText(self):
-        self.wait_for_element(self._welcome_screen_heading)
-        return self.get_text(self._welcome_screen_heading)
+    def get_team_field_heading(self):
+        self.wait_for_element(team_field_heading)
+        return self.get_text(team_field_heading)
+
+    def get_welcome_screen_text(self):
+        self.wait_for_element(welcome_screen_heading)
+        return self.get_text(welcome_screen_heading)
 
     # def getTeamFieldText(self):
-    #     self.wait_for_element(self._add_team_name_field)
-    #     self.element_click(self._add_team_name_field)
-    #     return self.get_text(self._add_team_name_field)
+    #     self.wait_for_element(add_team_name_field)
+    #     self.element_click(add_team_name_field)
+    #     return self.get_text(add_team_name_field)
 
-    def getTeamNameValidationText(self):
-        self.wait_for_element(self._team_name_already_exists_validation)
-        return self.get_text(self._team_name_already_exists_validation)
+    def get_team_name_validation_text(self):
+        self.wait_for_element(team_name_already_exists_validation)
+        return self.get_text(team_name_already_exists_validation)
 
-    def getTeamInvitationSentText(self):
-        self.wait_for_element(self._invitation_sent_message)
-        return self.get_text(self._invitation_sent_message)
+    def get_team_invitation_sent_text(self):
+        self.wait_for_element(invitation_sent_message)
+        return self.get_text(invitation_sent_message)
 
     # Actions
-    def clickSignUpLink(self):
-        self.wait_for_element(self._sign_up_link)
-        self.element_click(self._sign_up_link)
+    def click_sign_up_link(self):
+        self.wait_for_element(sign_up_link)
+        self.element_click(sign_up_link)
 
-    def clickLoginLink(self):
-        self.wait_for_element(self._login_link)
-        self.element_click(self._login_link)
+    def click_login_link(self):
+        self.wait_for_element(login_link)
+        self.element_click(login_link)
 
-    def enterFirstName(self, firstName):
-        self.wait_for_element(self._first_name_field)
-        self.element_click(self._first_name_field)
-        self.send_keys(clear_field, self._first_name_field)
-        self.send_keys(firstName, self._first_name_field)
-        self.log.info("Entered firstName: " + firstName)
+    def enter_first_name(self, first_name):
+        self.wait_for_element(first_name_field)
+        self.element_click(first_name_field)
+        self.send_keys(clear_field, first_name_field)
+        self.send_keys(first_name, first_name_field)
+        self.log.info("Entered firstName: " + first_name)
 
-    def enterSurName(self, surName):
-        self.element_click(self._surname_field)
-        self.send_keys(clear_field, self._surname_field)
-        self.send_keys(surName, self._surname_field)
-        self.log.info("Entered lastName: " + surName)
+    def enter_surname(self, surname):
+        self.element_click(surname_field)
+        self.send_keys(clear_field, surname_field)
+        self.send_keys(surname, surname_field)
+        self.log.info("Entered lastName: " + surname)
 
-    def enterCompanyName(self, companyName):
-        self.element_click(self._company_name_field)
-        self.send_keys(clear_field, self._company_name_field)
-        self.send_keys(companyName, self._company_name_field)
-        self.log.info("Entered companyName: " + companyName)
+    def enter_company_name(self, company_name):
+        self.element_click(company_name_field)
+        self.send_keys(clear_field, company_name_field)
+        self.send_keys(company_name, company_name_field)
+        self.log.info("Entered companyName: " + company_name)
         time.sleep(1)
-        self.selectCompanyName(Keys.ENTER)
+        self.select_company_name(Keys.ENTER)
 
-    def selectCompanyName(self, pressEnter):
-        self.send_keys(pressEnter, self._select_company_name)
+    def select_company_name(self, press_enter):
+        self.send_keys(press_enter, select_company_name)
 
-    def enterWorkEmail(self, email):
-        self.element_click(self._work_email_field)
-        self.send_keys(clear_field, self._work_email_field)
-        self.send_keys(email, self._work_email_field)
+    def enter_work_email(self, email):
+        self.element_click(work_email_field)
+        self.send_keys(clear_field, work_email_field)
+        self.send_keys(email, work_email_field)
         self.log.info("Entered email: " + email)
 
-    def enterWorkPhone(self, phone):
-        self.element_click(self._work_phone_field)
-        self.send_keys(clear_field, self._work_phone_field)
-        self.send_keys(phone, self._work_phone_field)
+    def enter_work_phone(self, phone):
+        self.element_click(work_phone_field)
+        self.send_keys(clear_field, work_phone_field)
+        self.send_keys(phone, work_phone_field)
         self.log.info("Entered phone: " + phone)
 
-    def enterPassword(self, password):
-        self.element_click(self._password_field)
-        self.send_keys(clear_field, self._password_field)
-        self.send_keys(password, self._password_field)
+    def enter_password(self, password):
+        self.element_click(password_field)
+        self.send_keys(clear_field, password_field)
+        self.send_keys(password, password_field)
         self.log.info("Entered password: " + password)
         self.web_scroll("down")
 
-    def enterConfirmPassword(self, confirmPassword):
-        self.element_click(self._confirm_password_field)
-        self.send_keys(clear_field, self._confirm_password_field)
-        self.send_keys(confirmPassword, self._confirm_password_field)
-        self.log.info("Entered confirmPassword: " + confirmPassword)
+    def enter_confirm_password(self, confirm_password):
+        self.element_click(confirm_password_field)
+        self.send_keys(clear_field, confirm_password_field)
+        self.send_keys(confirm_password, confirm_password_field)
+        self.log.info("Entered confirmPassword: " + confirm_password)
 
-    def clickTermsCheckbox(self):
+    def click_terms_checkbox(self):
         time.sleep(1)
-        term_checkbox = self.get_element(self._terms_checkbox)
+        term_checkbox = self.get_element(terms_checkbox)
         hoverover = ActionChains(self.driver).move_to_element(term_checkbox).click().perform()
         self.log.info("Clicked on I agree checkbox")
 
-    def clickConfirmAccountButton(self):
-        self.element_click(self._create_account_button)
+    def click_confirm_account_button(self):
+        self.element_click(create_account_button)
         self.log.info("Clicked on confirm account button")
 
-    def clickEmailValidationIcon(self):
-        self.wait_for_element(self._email_icon, 'css')
-        self.element_click(self._email_icon, 'css')
+    def click_email_validation_icon(self):
+        self.wait_for_element(email_icon, 'css')
+        self.element_click(email_icon, 'css')
         self.log.info("Clicked on email validation icon")
 
-    def clickPasswordValidationIcon(self):
-        self.wait_for_element(self._password_icon, 'css')
-        self.element_click(self._password_icon, 'css')
+    def click_password_validation_icon(self):
+        self.wait_for_element(password_icon, 'css')
+        self.element_click(password_icon, 'css')
         self.log.info("Clicked on password validation icon")
 
-    def clickConfirmPasswordValidationIcon(self):
-        self.wait_for_element(self._confirm_password_icon, 'css')
-        self.element_click(self._confirm_password_icon, 'css')
+    def click_confirm_password_validation_icon(self):
+        self.wait_for_element(confirm_password_icon, 'css')
+        self.element_click(confirm_password_icon, 'css')
         self.log.info("Clicked on confirm password validation icon")
 
-    def clickPhoneValidationIcon(self):
-        self.wait_for_element(self._phone_icon, 'css')
-        self.element_click(self._phone_icon, 'css')
+    def click_phone_validation_icon(self):
+        self.wait_for_element(phone_icon, 'css')
+        self.element_click(phone_icon, 'css')
         self.log.info("Clicked on phone validation icon")
 
-    def clickTeamName(self):
-        self.wait_for_element(self._add_team_name_field)
-        self.element_click(self._add_team_name_field)
-        self.send_keys(clear_field, self._add_team_name_field)
+    def click_team_name(self):
+        self.wait_for_element(add_team_name_field)
+        self.element_click(add_team_name_field)
+        self.send_keys(clear_field, add_team_name_field)
 
-    def clickTeamNameValidationIcon(self):
-        self.wait_for_element(self._team_name_validation_icon, 'css')
-        self.element_click(self._team_name_validation_icon, 'css')
+    def click_team_name_validation_icon(self):
+        self.wait_for_element(team_name_validation_icon, 'css')
+        self.element_click(team_name_validation_icon, 'css')
 
-    def enterTeamMemberEmail(self, email):
-        self.element_click(self._add_team_mates_box)
-        self.send_keys(clear_field, self._add_team_mates_box)
+    def enter_team_member_email(self, email):
+        self.element_click(add_team_mates_box)
+        self.send_keys(clear_field, add_team_mates_box)
         time.sleep(0.5)
-        self.send_keys(email, self._add_team_mates_box)
+        self.send_keys(email, add_team_mates_box)
 
-    def clickSendInviteButton(self):
-        self.wait_for_element(self._send_invites_button)
-        self.element_click(self._send_invites_button)
+    def click_Send_invite_button(self):
+        self.wait_for_element(send_invites_button)
+        self.element_click(send_invites_button)
 
-    def clickTeamPageContinueButton(self):
-        self.element_click(self._continue_button)
+    def click_team_page_continue_button(self):
+        self.element_click(continue_button)
 
-    def clickSkipToAccountButton(self):
+    def click_skip_to_account_button(self):
         self.web_scroll('down')
-        self.wait_for_element(self._skip_to_account_button)
-        self.element_click(self._skip_to_account_button)
+        self.wait_for_element(skip_to_account_button)
+        self.element_click(skip_to_account_button)
 
     # Methods
-    def signUpForm(self, firstName='', surName='', companyName='', email='', phone='',
-                   password='', confirmPassword=''):
+    def sign_up_form(self, first_name='', surname='', company_name='', email='', phone='',
+                     password='', confirm_password=''):
         self.web_scroll("up")
-        self.enterFirstName(firstName)
-        self.enterSurName(surName)
-        if companyName == '':
-            self.send_keys(clear_field, self._company_name_field)
+        time.sleep(3)
+        self.enter_first_name(first_name)
+        self.enter_surname(surname)
+        if company_name == '':
+            self.send_keys(clear_field, company_name_field)
         else:
-            self.enterCompanyName(companyName)
-        self.enterWorkEmail(email)
-        self.enterWorkPhone(phone)
-        self.enterPassword(password)
-        self.enterConfirmPassword(confirmPassword)
+            self.enter_company_name(company_name)
+        self.enter_work_email(email)
+        self.enter_work_phone(phone)
+        self.enter_password(password)
+        self.enter_confirm_password(confirm_password)
 
-    def registerUsers(self, firstName='', surName='', companyName='', email='', phone='',
-                        password='', confirmPassword=''):
-        self.driver.get(self._register_url)
-        time.sleep(5)
-        self.signUpForm()
-        self.clickTermsCheckbox()
-        self.clickConfirmAccountButton()
+    # def registerUsers(self, firstName='', surName='', companyName='', email='', phone='',
+    #                     password='', confirmPassword=''):
+    #     self.driver.get(register_url)
+    #     time.sleep(5)
+    #     self.signUpForm()
+    #     self.clickTermsCheckbox()
+    #     self.clickConfirmAccountButton()
 
-    def addNewTeamName(self, teamName):
-        self.clickTeamName()
-        self.send_keys(teamName, self._add_team_name_field)
+    def add_new_team(self, teamName):
+        self.click_team_name()
+        self.send_keys(teamName, add_team_name_field)
         time.sleep(2)
 
-    def inviteTeamMember(self, email):
-        self.enterTeamMemberEmail(email)
-        self.clickSendInviteButton()
+    def invite_team_member(self, email):
+        self.enter_team_member_email(email)
+        self.click_Send_invite_button()
 
     def welcome_screen_text(self):
-        text = self.getWelcomeScreenText()
-        self.verify_text_match(text, welcome_screen)
+        text = self.get_welcome_screen_text()
+        self.verify_text_match(text, WELCOME_SCREEN)
 
     # Assertions
-    def verifyPageTitle(self):
+    def verify_page_title(self):
         time.sleep(5)
         title = self.get_title()
-        self.verify_text_match(title, sign_up_page_title)
+        self.verify_text_match(title, SIGN_UP_PAGE_TITLE)
         self.log.info("User is on signup page")
 
-    def verifyConfirmButtonDisable(self):
+    def verify_confirm_button_disable(self):
         self.web_scroll('down')
-        self.check_element_state(self._create_account_button, element_name='create account button')
+        self.check_element_state(create_account_button, element_name='create account button')
 
-    def verifyPhoneValidationMessage(self):
-        self.clickPhoneValidationIcon()
-        phone_validation_text = self.getInvalidPhoneText()
-        self.verify_text_match(phone_validation_text, invalid_phone_message)
+    def verify_max_name_length_validation(self, name=''):
+        text = self.get_max_length_validation_text()
+        if name == 'first_name':
+            self.verify_text_match(text, FIRST_NAME_MORE_THAN_MAX_LENGTH)
+        else:
+            self.verify_text_match(text, LAST_NAME_MORE_THAN_MAX_LENGTH)
 
-    def verifyEmailValidationMessage(self, email_type=''):
+    def verify_phone_validation_message(self):
+        self.click_phone_validation_icon()
+        phone_validation_text = self.get_invalid_phone_text()
+        self.verify_text_match(phone_validation_text, INVALID_PHONE_MESSAGE)
+
+    def verify_email_validation_message(self, email_type=''):
         self.web_scroll('up')
         if email_type == "invalid":
-            self.clickEmailValidationIcon()
-            email_validation_text = self.getInvalidEmailText()
-            self.verify_text_match(email_validation_text, invalid_email_address)
+            self.click_email_validation_icon()
+            email_validation_text = self.get_invalid_email_text()
+            self.verify_text_match(email_validation_text, INVALID_EMAIL_ADDRESS)
         else:
-            self.clickEmailValidationIcon()
-            email_validation_text = self.get_text(self._invalid_email)
-            self.verify_text_match(email_validation_text, email_more_than_max_length)
+            self.click_email_validation_icon()
+            email_validation_text = self.get_text(max_character_email)
+            self.verify_text_match(email_validation_text, EMAIL_MORE_THAN_MAX_LENGTH)
 
-    def verifyPasswordValidationMessage(self, val='mismatch'):
+    def verify_password_validation_message(self, val='mismatch'):
         if val == "min":
-            self.clickPasswordValidationIcon()
-            actual_validation_message = self.getMinPasswordValidationText()
-            self.verify_text_match(actual_validation_message, password_less_than_min_length)
+            self.click_password_validation_icon()
+            actual_validation_message = self.get_min_password_validation_text()
+            self.verify_text_match(actual_validation_message, PASSWORD_LESS_THAN_MIN_LENGTH)
         elif val == 'max':
-            self.clickPasswordValidationIcon()
-            actual_validation_message = self.getMaxPasswordValidationText()
-            self.verify_text_match(actual_validation_message, password_more_than_max_length)
+            self.click_password_validation_icon()
+            actual_validation_message = self.get_max_password_validation_text()
+            self.verify_text_match(actual_validation_message, PASSWORD_MORE_THAN_MAX_LENGTH)
         elif val == "same_as_email":
-            self.clickPasswordValidationIcon()
-            actual_validation_message = self.getPasswordLookAlikeEmailValidationText()
-            self.verify_text_match(actual_validation_message, password_lookalike_message)
+            self.click_password_validation_icon()
+            actual_validation_message = self.get_password_look_alike_email_validation_text()
+            self.verify_text_match(actual_validation_message, PASSWORD_LOOKALIKE_MESSAGE)
         else:
-            self.clickConfirmPasswordValidationIcon()
-            actual_validation_message = self.getPasswordMisMatchValidationText()
-            self.verify_text_match(actual_validation_message, password_mismatch)
+            self.click_confirm_password_validation_icon()
+            actual_validation_message = self.get_password_mismatch_validation_text()
+            self.verify_text_match(actual_validation_message, PASSWORD_MISMATCH_MESSAGE)
 
-    def verifyLoginLink(self):
-        self.clickLoginLink()
-        heading = self.getLoginPageHeading()
-        self.verify_text_match(heading, login_page_heading)
-        self.clickSignUpLink()
+    def verify_login_link(self):
+        self.click_login_link()
+        heading = self.get_login_page_heading()
+        self.verify_text_match(heading, LOGIN_PAGE_HEADING)
+        self.click_sign_up_link()
 
-    def verifyPrivacyPolicyLink(self):
+    def verify_privacy_policy_link(self):
         self.web_scroll('down')
-        self.link_redirect(self._privacy_link, self._redirect_privacy_page_heading,
-                           redirected_privacy_page_heading)
+        self.link_redirect(privacy_link, redirect_privacy_page_heading,
+                           REDIRECTED_PRIVACY_PAGE_HEADING)
 
-    def verifyTermsOfServiceLink(self):
+    def verify_terms_of_service_link(self):
         self.web_scroll('down')
-        self.link_redirect(self._terms_of_service_link, self._redirect_terms_page_heading,
-                           redirected_terms_page_heading)
+        self.link_redirect(terms_of_service_link, redirect_terms_page_heading,
+                           REDIRECTED_TERMS_PAGE_HEADING)
 
-    def verifySDKAgreementLink(self):
+    def verify_sdk_agreement_link(self):
         self.web_scroll('down')
-        self.link_redirect(self._sdk_license_agreement_link, self._redirect_sdk_page_heading,
-                           redirected_sdk_agreement_page_heading)
+        self.link_redirect(sdk_license_agreement_link, redirect_sdk_page_heading,
+                           REDIRECTED_SDK_AGREEMENT_PAGE_HEADING)
 
-    def verifyACHTransferApiLink(self):
+    def verify_ach_transfer_api_link(self):
         self.web_scroll('up')
-        self.link_redirect(self._ach_transfer_link, self._redirect_ach_transfer_page_heading,
-                           redirected_ach_page_heading)
+        self.link_redirect(ach_transfer_link, redirect_ach_transfer_page_heading,
+                           REDIRECTED_ACH_PAGE_HEADING)
 
-    def verifyDigitalWalletApiLink(self):
-        self.link_redirect(self._digital_wallet_api_link, self._redirect_digital_wallet_page_heading,
-                           redirected_digital_wallet_api_page_heading)
+    def verify_digital_wallet_api_link(self):
+        self.link_redirect(digital_wallet_api_link, redirect_digital_wallet_page_heading,
+                           REDIRECTED_DIGITAL_WALLET_API_PAGE_HEADING)
 
-    def verifyBankAccountLinkingApiLink(self):
-        self.link_redirect(self._bank_account_linking_api_link, self._redirect_bank_account_linking_page_heading,
-                           redirected_account_linking_page_heading)
+    def verify_bank_account_linking_api_link(self):
+        self.link_redirect(bank_account_linking_api_link, redirect_bank_account_linking_page_heading,
+                           REDIRECTED_ACCOUNT_LINKING_PAGE_HEADING)
 
-    def verifyKYCIdentityVerificationLink(self):
-        self.link_redirect(self._kyc_kyb_identity_verification_api_link,
-                           self._redirect_kyb_kyc_verification_page_heading,
-                           redirected_kyc_kyb_identity_verification_page_heading)
+    def verify_kyc_identity_verification_link(self):
+        self.link_redirect(kyc_kyb_identity_verification_api_link,
+                           redirect_kyb_kyc_verification_page_heading,
+                           REDIRECTED_KYC_KYB_IDENTITY_VERIFICATION_PAGE_HEADING)
 
-    def verifyAlreadyHaveSilaAccounText(self):
+    def verify_already_have_sila_account_text(self):
         self.web_scroll('down')
-        actual_text = self.getAlreadyHaveSilaAccountText()
-        self.verify_text_match(actual_text, already_have_a_sila_account)
+        actual_text = self.get_already_have_sila_Account_text()
+        self.verify_text_match(actual_text, ALREADY_HAVE_A_SILA_ACCOUNT)
 
-    def verifyUserNavigatesToInviteTeamScreen(self):
-        heading = self.getTeamFieldHeading()
-        self.verify_text_match(heading, team_heading)
+    def verify_user_navigates_to_invite_team_screen(self):
+        heading = self.get_team_field_heading()
+        self.verify_text_match(heading, TEAM_HEADING)
 
     # def verifyTeamNameFieldNotEmpty(self, name):
     #     team_name = self.getTeamFieldText()
     #     self.verify_text_match(team_name, name)
 
-    def VerifyTeamNameAlreadyExists(self):
+    def verify_team_name_already_exists(self):
         self.web_scroll('up')
-        self.clickTeamNameValidationIcon()
-        text = self.getTeamNameValidationText()
-        self.verify_text_match(text, team_name_already_exits)
+        time.sleep(2)
+        self.click_team_name_validation_icon()
+        text = self.get_team_name_validation_text()
+        self.verify_text_match(text, TEAM_NAME_ALREADY_EXITS)
 
-    def verifyContinueButtonState(self, value=True):
+    def verify_continue_button_state(self, value=True):
         self.web_scroll('down')
-        if value == False:
-            self.check_element_state(self._continue_button, element_name="continue button on team invite screen")
+        if not value:
+            self.check_element_state(continue_button, element_name="continue button on team invite screen")
         else:
-            self.check_element_state(self._continue_button, value=True,
+            self.check_element_state(continue_button, value=True,
                                      element_name="continue button on team invite screen")
 
-    def verifyInviteAlreadyRegisteredUserValidation(self, alreadyRegisteredUserEmail):
-        self.enterTeamMemberEmail(alreadyRegisteredUserEmail)
+    def verify_invite_already_registered_user_validation(self, alreadyRegisteredUserEmail):
+        self.enter_team_member_email(alreadyRegisteredUserEmail)
         time.sleep(2)
-        text = self.getTeamInvitationSentText()
-        self.verify_text_contains(text, email_already_registered)
+        text = self.get_team_invitation_sent_text()
+        self.verify_text_contains(text, EMAIL_ALREADY_REGISTERED)
 
-    def verifyInviteUserWithInvalidEmail(self, email):
-        self.enterTeamMemberEmail(email)
+    def verify_invite_user_with_invalid_email(self, email):
+        self.enter_team_member_email(email)
         time.sleep(3)
-        text = self.getTeamInvitationSentText()
-        self.verify_text_contains(text, invalid_email_in_invite_team_member_box)
+        text = self.get_team_invitation_sent_text()
+        self.verify_text_contains(text, INVALID_EMAIL_IN_INVITE_TEAM_MEMBER_BOX)
 
-    def verifyTeamMemberInvitedSuccessfully(self, email):
-        self.inviteTeamMember(email)
+    def verify_team_member_invited_successfully(self, email):
+        self.invite_team_member(email)
         time.sleep(3)
-        text = self.getTeamInvitationSentText()
-        self.verify_text_match(text, invitation_sent_successfully)
+        text = self.get_team_invitation_sent_text()
+        self.verify_text_match(text, INVITATION_SENT_SUCCESSFULLY)
 
-    def verifyWelcomeScreen(self):
-        self.clickTeamPageContinueButton()
-        self.clickSkipToAccountButton()
+    def verify_welcome_screen(self):
+        self.click_team_page_continue_button()
+        self.click_skip_to_account_button()
         self.welcome_screen_text()
 
-    def verifyConfirmEmail(self, emailPrefix):
+    def verify_confirm_email(self, emailPrefix):
         self.log.info("Email verification started")
-        get_url = self.verify_email_confirmation(emailPrefix)
+        get_url = self.verify_email_confirmation(emailPrefix, flow='register')
         get_url = self.driver.get(get_url)
         time.sleep(5)
         self.log.info(get_url)
-        text = self.getWelcomeScreenText()
-        self.verify_text_match(text, welcome_screen)
-        self.log.info("test is user")
+        text = self.get_welcome_screen_text()
+        self.verify_text_match(text, WELCOME_SCREEN)
         self.driver.quit()

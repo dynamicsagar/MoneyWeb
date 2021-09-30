@@ -10,12 +10,13 @@ stage_url = "https://stageconsole.silamoney.com/login"
 production_url = "https://console.silamoney.com/login"
 
 # register form data
-surname = "Role"
-company_name = "ArcGate"
-phone = "9874585855"
-password = "Arcgate1!"
-confirm_password = "Arcgate1!"
-
+FIRST_NAME = "Automation"
+SURNAME = "User"
+COMPANY_NAME = "ArcGate"
+PHONE = "9874585855"
+PASSWORD = "Arcgate1!"
+CONFIRM_PASSWORD = "Arcgate1!"
+RANDOM_EMAIL = name + "@mailiantor.com"
 
 # admin user
 admin_first_name = "Sila_Admin"
@@ -47,13 +48,13 @@ contractor_email = "silaqaautomation+" + contractor + "@gmail.com"
 team_name = "team_" + name
 
 # register invalid and mix and max data
-password_below_min_limit = "1234567"
-password_above_max_limit = "Automation Testing of max characters limits for sila admin api. Automation Testing of max characters limits"
-email_above_max_length = "fakedsadasdasddsadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsadassadasdasddsadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsadasssadasdasddsadasdasdasdasdasdasdasdasdasdasdasdasdasdgsadadasdasdasdasdasdasdsadasdasdasdasdasdasdasdasdasdasd@gmail.com"
-mismatch_confirm_password = "Arcgate12!"
-password_lookalike_email = user_email
-invalid_email = "test@"
-invalid_phone_num = "dadas"
-invalid_user_name = "fdd@g"
-invalid_password = "arcgate"
+MORE_THAN_100_CHARACTERS = "testuserforsignuptestuserforsignuptestuserforsignuptestuserforsignuptestuserforsignuptestuserforsisss"
+LESS_THAN_8_CHARACTERS = "1234567"
+EMAIL_MORE_THAN_254_CHARACTERS = "fakedsadasdasddsadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsadassadasdasddsadasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdsadasssadasdasddsadasdasdasdasdasdasdasdasdasdasdasdasdasdgsadadasdasdasdasdasdasdsadasdasdasdasdasdasdasdasdasdasd@gmail.com"
+MISMATCH_CONFIRM_PASSWORD = "Arcgate12!"
+PASSWORD_LOOKALIKE_EMAIL = user_email
+INVALID_EMAIL = "test@"
+INVALID_PHONE_NUM = "dadas"
+INVALID_USER_NAME = "fdd@g"
+INVALID_PASSWORD = "arcgate"
 

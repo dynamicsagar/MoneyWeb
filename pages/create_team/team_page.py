@@ -70,7 +70,7 @@ class TeamCreationPage(SeleniumDriver):
     def verify_team_modal_title(self):
         self.open_team_modal_box()
         title = self.get_team_title()
-        self.verify_text_match(title, team_modal_box_title)
+        self.verify_text_match(title, TEAM_MODAL_BOX_TITLE)
 
     def verify_close_icon_close_the_team_modal_box(self):
         self.click_close_icon()

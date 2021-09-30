@@ -12,6 +12,9 @@ import os
 
 from selenium import webdriver
 from testcases.test_config import *
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
 class WebDriverFactory():
 
@@ -45,14 +48,15 @@ class WebDriverFactory():
             # Set ie driver
             driver = webdriver.Ie()
         elif self.browser == "firefox":
-            driver = webdriver.Firefox(executable_path="./drivers/geckodriver.exe")
+            driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
         else:
             # Set chrome driver
-            chromedriver = "./drivers/chromedriver.exe"
-            os.environ["webdriver.chrome.driver"] = chromedriver
+            # driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+            # chromedriver = "./drivers/chromedriver.exe"
+            # os.environ["webdriver.chrome.driver"] = driver
             chrome_options = webdriver.ChromeOptions()
             chrome_options.add_argument("--incognito")
-            driver = webdriver.Chrome(chromedriver, options=chrome_options)
+            driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(), options=chrome_options)
             driver.implicitly_wait(30)
             driver.set_window_size(1440, 900)
         # Setting Driver Implicit Time out for An Element

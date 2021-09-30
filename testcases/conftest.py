@@ -1,6 +1,7 @@
 import os
 import xlrd
 import pytest
+from selenium import webdriver
 
 from base.webdriver_factory import WebDriverFactory
 from pages.login.login_page import LoginPage
@@ -9,7 +10,6 @@ from utilities.util import Util
 
 @pytest.fixture(scope="class")
 def setUp():
-
     try:
         filePath = "./testdata/datasheet.xls"
         if os.path.exists(filePath):
@@ -38,6 +38,26 @@ def setUp():
     yield
     print("Running method level tearDown")
 
+
+# @pytest.fixture(params=["chrome"], scope="function")
+# # @pytest.fixture(scope="class")
+# def oneTest(request):
+#     remote_url = "http://localhost:4444/wd/hub"
+#     if request.param == "chrome":
+#         #     # driver = webdriver.Chrome(executable_path=ChromeDriverManager().install())
+#         driver = webdriver.Remote(command_executor=remote_url, desired_capabilities={"browserName": "chrome"})
+#
+#     if request.param == "firefox":
+#         # driver = webdriver.Firefox(executable_path=GeckoDriverManager().install())
+#         driver = webdriver.Remote(command_executor=remote_url, desired_capabilities={"browserName": "firefox"})
+#
+#     if request.cls is not None:
+#         request.cls.driver = driver
+#     baseURL = "https://stageconsole.silamoney.com/login"
+#     driver.get(baseURL)
+#     driver.maximize_window()
+#     yield driver
+#     driver.quit()
 
 @pytest.fixture(scope="class")
 def oneTest(request, browser, env):
@@ -69,9 +89,9 @@ def oneTimeSetUp(request, browser, env):
 
     # For row 0 and column 0
 
-    # username = utility.get_data(1)
-    # lp.verifyLoginSuccessfully(username, "Arcgate1!")
-    lp.verifyLoginSuccessfully("silaqa002@mailinator.com", "12345678")
+    username = utility.get_data(1)
+    lp.verifyLoginSuccessfully(username, "Arcgate1!")
+    # lp.verifyLoginSuccessfully("silaqa002@mailinator.com", "12345678")
 
     if request.cls is not None:
         request.cls.driver = driver

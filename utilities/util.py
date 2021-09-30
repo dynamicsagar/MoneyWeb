@@ -136,7 +136,7 @@ class Util(object):
         except:
             self.log.info("Unable to insert values into xls")
 
-    def get_data(self, userName=''):
+    def get_data(self, val=''):
         # Give the location of the file
         loc = "./testdata/datasheet.xls"
 
@@ -145,8 +145,7 @@ class Util(object):
         sheet = wb.sheet_by_index(0)
         rowNum = sheet.nrows
         for i in range(rowNum):
-            if userName in sheet.cell_value(i, 0):
-                print(sheet.cell_value(i, 0))
-                print('hello')
-                return sheet.cell_value(i, 0)
-        self.log.info("No value found: " + userName)
+            # if userName in sheet.cell_value(i, 0):
+            print(sheet.cell_value(val, 0))
+            return sheet.cell_value(val, 0)
+        # self.log.info("No value found: " + userName)

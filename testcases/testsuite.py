@@ -4,7 +4,7 @@ import xmlrunner
 
 from testcases.register.test_register import RegisterTests
 from testcases.login.test_login import LoginTests
-from testcases.logout.test_logout import LogoutTests
+# from testcases.logout.test_logout import LogoutTests
 from testcases.generate_report import GenerateReport
 
 
@@ -23,7 +23,7 @@ def run_unit_tests():
     classes = [
         RegisterTests,
         LoginTests,
-        LogoutTests,
+        # LogoutTests,
         GenerateReport
     ]
     runner.run(create_suite(classes))

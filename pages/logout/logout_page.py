@@ -51,11 +51,11 @@ class LogoutPage(SeleniumDriver):
     def verifyPopupTitle(self):
         self.clickLogoutLinkFromUserMenu()
         text = self.getPopupTitle()
-        self.verify_text_match(text, popup_title)
+        self.verify_text_match(text, LOGOUT_POPUP_TITLE)
 
     def verifyPopupText(self):
         text = self.getPopText()
-        self.verify_text_match(text, popup_text)
+        self.verify_text_match(text, LOGOUT_POPUP_TEXT)
 
     def verifyCloseIcon(self):
         self.clickCloseIcon()

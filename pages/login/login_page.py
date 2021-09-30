@@ -86,36 +86,36 @@ class LoginPage(SeleniumDriver):
     def verifyForgotPasswordLink(self):
         self.clickForgotPasswordLink()
         text = self.getForgotPasswordPageHeadingText()
-        self.verify_text_match(text, forgot_password_page_heading)
+        self.verify_text_match(text, FORGOT_PASSWORD_PAGE_HEADING)
         self.clickForgotPasswordPageCancelButton()
 
     def verifyLoginWithEmptyUsername(self, userName, UserPassword):
         self.login(userName, UserPassword)
         text = self.getUserNameFieldEmptyText()
-        self.verify_text_match(text, empty_user_name)
+        self.verify_text_match(text, EMPTY_USER_NAME)
 
     def verifyUserNameFieldValidation(self, userName, UserPassword):
         self.login(userName, UserPassword)
         text = self.getUserNameValidationMessage()
-        self.verify_text_match(text, user_name_validation)
+        self.verify_text_match(text, USER_NAME_VALIDATION)
 
     def verifyLoginWithEmptyPassword(self, userName, UserPassword):
         self.login(userName, UserPassword)
         text = self.getPasswordEmptyFieldText()
-        self.verify_text_match(text, empty_password)
+        self.verify_text_match(text, EMPTY_PASSWORD_MESSAGE)
 
     def verifyLoginWhenUsernameInvalid(self, userName, UserPassword):
         self.login(userName, UserPassword)
         time.sleep(1)
         text = self.getInvalidUserNameOrPasswordErrorMessage()
-        self.verify_text_contains(text, invalid_login)
+        self.verify_text_contains(text, INVALID_LOGIN)
 
     def verifyLoginWhenPasswordInvalid(self, userName, UserPassword):
         time.sleep(2)
         self.login(userName, UserPassword)
         time.sleep(1)
         text = self.getInvalidUserNameOrPasswordErrorMessage()
-        self.verify_text_contains(text, invalid_password_attempt)
+        self.verify_text_contains(text, INVALID_PASSWORD_ATTEMPT)
 
     def verifyLoginSuccessfully(self, userName, UserPassword):
         # utility = Util()

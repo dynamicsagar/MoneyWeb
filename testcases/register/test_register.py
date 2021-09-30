@@ -17,169 +17,190 @@ class RegisterTests(unittest.TestCase):
 
     def test_001_verify_register_page(self):
         """Verify user is on the register page."""
-        self.register.clickSignUpLink()
-        self.register.verifyPageTitle()
+        self.register = RegisterPage(self.driver)
+        self.register.click_sign_up_link()
+        self.register.verify_page_title()
 
-    def test_002_register_when_first_name_empty(self):
-        """Verify user is not able to register when first_name field is empty."""
-        self.register.signUpForm('', surname, company_name, user_email, phone, password, confirm_password)
-        self.register.clickTermsCheckbox()
-        self.register.verifyConfirmButtonDisable()
-
-    def test_003_register_when_surname_empty(self):
-        """Verify user is not able to register when surname field is empty."""
-        self.register.signUpForm(admin_first_name, '', company_name, user_email, phone, password, confirm_password)
-        self.register.verifyConfirmButtonDisable()
-
-    def test_004_register_when_company_name_empty(self):
-        """Verify user is not able to register when company_name field is empty."""
-        self.register.signUpForm(admin_first_name, surname, '', user_email, phone, password, confirm_password)
-        self.register.verifyConfirmButtonDisable()
-
-    def test_005_register_when_work_email_empty(self):
-        """Verify user is not able to register when work email field is empty."""
-        self.register.signUpForm(admin_first_name, surname, company_name, '', phone, password, confirm_password)
-        self.register.verifyConfirmButtonDisable()
-
-    def test_006_register_when_phone_empty(self):
-        """Verify user is not able to register when work_phone field is empty."""
-        self.register.signUpForm(admin_first_name, surname, company_name, user_email, '', password, confirm_password)
-        self.register.verifyConfirmButtonDisable()
-
-    def test_007_register_when_password_empty(self):
-        """Verify user is not able to register when password field is empty."""
-        self.register.signUpForm(admin_first_name, surname, company_name, user_email, phone, '', confirm_password)
-        self.register.verifyConfirmButtonDisable()
-
-    def test_008_register_when_confirm_password_empty(self):
-        """Verify user is not able to register when confirm_password field is empty."""
-        self.register.signUpForm(admin_first_name, surname, company_name, user_email, phone, password, '')
-        self.register.verifyConfirmButtonDisable()
-
-    def test_009_register_when_terms_checkbox_empty(self):
-        """Verify user is not able to register when confirm_password field is empty."""
-        self.register.signUpForm(admin_first_name, surname, company_name, user_email, phone, password,
-                                 confirm_password)
-        self.register.clickTermsCheckbox()
-        self.register.verifyConfirmButtonDisable()
-
-    def test_010_register_when_email_invalid(self):
-        """Verify user is not able to register when email is invalid."""
-        self.register.signUpForm(email='test@')
-        self.register.verifyEmailValidationMessage("invalid")
-
-    def test_011_register_when_email_is_more_than_255_characters(self):
-        """Verify user is not able to register when email is more than 255 characters."""
-        self.register.signUpForm(email=email_above_max_length)
-        self.register.verifyEmailValidationMessage()
-
-    def test_012_register_when_password_is_less_than_8_characters(self):
-        """Verify user is not able to register when password is less than 8 characters."""
-        self.register.signUpForm(password=password_below_min_limit)
-        self.register.verifyPasswordValidationMessage("min")
-
-    def test_013_register_when_password_is_more_than_100_characters(self):
-        """Verify user is not able to register when password is more than 100 characters."""
-        self.register.signUpForm(password=password_above_max_limit)
-        self.register.verifyPasswordValidationMessage('max')
-
-    def test_014_register_when_password_and_confirm_password_mismatch(self):
-        """Verify user is not able to register when password and confirm password mismatch."""
-        self.register.signUpForm(password=password, confirmPassword=mismatch_confirm_password)
-        self.register.clickTermsCheckbox()
-        self.register.verifyPasswordValidationMessage('mismatch')
-
-    def test_015_register_when_password_same_as_email(self):
-        """Verify user is not able to register when password is similar to email."""
-        self.register.signUpForm(email=user_email, password=password_lookalike_email)
-        self.register.clickTermsCheckbox()
-        self.register.verifyPasswordValidationMessage("same_as_email")
-
-    def test_016_register_when_phone_number_is_invalid(self):
-        """Verify user is not able to register when entered invalid phone number."""
-        self.register.signUpForm(phone=invalid_phone_num)
-        self.register.verifyPhoneValidationMessage()
-
-    def test_017_verify_privacy_policy(self):
-        """Verify privacy policy link navigates user to privacy policy page.."""
-        self.register.verifyPrivacyPolicyLink()
-
-    def test_018_verify_terms_of_service_link(self):
-        """Verify terms of service link navigates user to terms and services page."""
-        self.register.verifyTermsOfServiceLink()
-
-    def test_019_verify_sdk_agreement_link(self):
-        """Verify sdk agreement link navigates user to sdk agreement page."""
-        self.register.verifySDKAgreementLink()
-
-    def test_020_verify_ACH_transfer_link(self):
-        """Verify ACH transfer api link navigates user to ach transfer page."""
-        self.register.verifyACHTransferApiLink()
-
-    def test_021_verify_digital_wallet_api_link(self):
-        """Verify digital wallet api link navigates user to digital wallet page."""
-        self.register.verifyDigitalWalletApiLink()
-
-    def test_022_verify_bank_account_link(self):
-        """Verify bank account linking api navigates user to bank account link page"""
-        self.register.verifyBankAccountLinkingApiLink()
-
-    def test_023_verify_kyc_kyb_identity_verification_link(self):
-        """Verify user navigates to kyb kyc verification page."""
-        self.register.verifyKYCIdentityVerificationLink()
-
-    def test_024_verify_already_have_account_text(self):
-        """Verify page contains already have a sila account text."""
-        self.register.verifyAlreadyHaveSilaAccounText()
-
-    def test_025_verify_login_link(self):
-        """Verify user is able to navigates to login page."""
-        self.register.verifyLoginLink()
-
-    # def test_026_verify_user_navigates_to_invite_team_screen(self):
-    #     """Verify user is able to navigate from register screen to invite team screen."""
-    #     self.register.signUpForm(admin_first_name, surname, company_name, user_email, phone, password,
-    #                              confirm_password)
-    #     self.register.clickTermsCheckbox()
-    #     self.register.clickConfirmAccountButton()
-    #     utility.insert_data(user_email)
-    #     self.register.verifyUserNavigatesToInviteTeamScreen()
+    # def test_002_register_when_first_name_empty(self):
+    #     """Verify user is not able to register when first_name field is empty."""
+    #     self.register.sign_up_form('', SURNAME, COMPANY_NAME, RANDOM_EMAIL, PHONE, PASSWORD,
+    #                                CONFIRM_PASSWORD)
+    #     self.register.click_terms_checkbox()
+    #     self.register.verify_confirm_button_disable()
     #
-    # def test_027_verify_team_screen_text(self):
-    #     """Verify heading and paragraph on invite team member screen.."""
-    #     self.register.verifyContinueButtonState(False)
+    # def test_003_register_when_surname_empty(self):
+    #     """Verify user is not able to register when surname field is empty."""
+    #     self.register.enter_surname('')
+    #     self.register.verify_confirm_button_disable()
     #
-    # def test_028_verify_team_name_already_exists_validation(self):
-    #     """Verify team name already exist validation error"""
-    #     self.register.VerifyTeamNameAlreadyExists()
+    # def test_004_register_when_company_name_empty(self):
+    #     """Verify user is not able to register when company_name field is empty."""
+    #     self.register.sign_up_form(FIRST_NAME, SURNAME, '', RANDOM_EMAIL, PHONE, PASSWORD,
+    #                                CONFIRM_PASSWORD)
+    #     self.register.verify_confirm_button_disable()
     #
-    # def test_029_add_new_team_name(self):
-    #     """Verify user is able to add new team."""
-    #     self.register.addNewTeamName(team_name)
-    #     self.register.verifyContinueButtonState(True)
+    # def test_005_register_when_work_email_empty(self):
+    #     """Verify user is not able to register when work email field is empty."""
+    #     self.register.sign_up_form(FIRST_NAME, SURNAME, COMPANY_NAME, '', PHONE, PASSWORD,
+    #                                CONFIRM_PASSWORD)
+    #     self.register.verify_confirm_button_disable()
     #
-    # def test_030_invite_already_registered_user_to_team(self):
-    #     """Verify user is not able to invite already registered member."""
-    #     self.register.verifyInviteAlreadyRegisteredUserValidation("test@gmail.com")
+    # def test_006_register_when_phone_empty(self):
+    #     """Verify user is not able to register when work_phone field is empty."""
+    #     self.register.sign_up_form(FIRST_NAME, SURNAME, COMPANY_NAME, RANDOM_EMAIL, '', PASSWORD,
+    #                                CONFIRM_PASSWORD)
+    #     self.register.verify_confirm_button_disable()
     #
-    # def test_031_invite_user_with_invalid_email(self):
-    #     """Verify user is not able to invite team member when email is invalid."""
-    #     self.register.verifyInviteUserWithInvalidEmail(email=invalid_email)
-    #     self.register.verifyContinueButtonState(False)
+    # def test_007_register_when_password_empty(self):
+    #     """Verify user is not able to register when password field is empty."""
+    #     self.register.sign_up_form(FIRST_NAME, SURNAME, COMPANY_NAME, RANDOM_EMAIL, PHONE, '',
+    #                                CONFIRM_PASSWORD)
+    #     self.register.verify_confirm_button_disable()
     #
-    # def test_032_invite_team_member_successfully(self):
-    #     """Verify user is able to invite team member from add team box."""
-    #     self.register.verifyTeamMemberInvitedSuccessfully(email="test123@trr.com")
+    # def test_008_register_when_confirm_password_empty(self):
+    #     """Verify user is not able to register when confirm_password field is empty."""
+    #     self.register.sign_up_form(FIRST_NAME, SURNAME, COMPANY_NAME, RANDOM_EMAIL, PHONE, PASSWORD, ' ')
+    #     self.register.verify_confirm_button_disable()
     #
-    # def test_033_register_user_successfully(self):
-    #     """Verify user navigates to welcome screen successfully."""
-    #     self.register.verifyWelcomeScreen()
+    # def test_009_register_with_more_than_100_characters_first_name(self):
+    #     """Verify user is not able to register when first_name is more than 100 characters."""
+    #     self.register.sign_up_form(MORE_THAN_100_CHARACTERS, SURNAME, COMPANY_NAME, RANDOM_EMAIL, PHONE, PASSWORD,
+    #                                CONFIRM_PASSWORD)
+    #     self.register.click_confirm_account_button()
+    #     self.register.verify_max_name_length_validation(name='first_name')
+    #
+    # def test_010_register_with_more_than_100_characters_sur_name(self):
+    #     """Verify user is not able to register when surname is more than 100 characters."""
+    #     self.register.sign_up_form(FIRST_NAME, MORE_THAN_100_CHARACTERS, COMPANY_NAME, RANDOM_EMAIL, PHONE, PASSWORD,
+    #                                CONFIRM_PASSWORD)
+    #     self.register.click_confirm_account_button()
+    #     self.register.verify_max_name_length_validation()
+    #
+    # def test_011_register_when_terms_checkbox_empty(self):
+    #     """Verify user is not able to register when confirm_password field is empty."""
+    #     self.register.sign_up_form(FIRST_NAME, SURNAME, COMPANY_NAME, RANDOM_EMAIL, PHONE, PASSWORD,
+    #                                CONFIRM_PASSWORD)
+    #     self.register.click_terms_checkbox()
+    #     self.register.verify_confirm_button_disable()
+    #
+    # def test_012_register_when_email_invalid(self):
+    #     """Verify user is not able to register when email is invalid."""
+    #     self.register.enter_work_email(email=INVALID_EMAIL)
+    #     self.register.verify_email_validation_message("invalid")
+    #
+    # def test_013_register_when_email_is_more_than_255_characters(self):
+    #     """Verify user is not able to register when email is more than 255 characters."""
+    #     self.register.enter_work_email(email=EMAIL_MORE_THAN_254_CHARACTERS)
+    #     self.register.verify_email_validation_message()
+    #
+    # def test_014_register_when_password_is_less_than_8_characters(self):
+    #     """Verify user is not able to register when password is less than 8 characters."""
+    #     self.register.enter_password(password=LESS_THAN_8_CHARACTERS)
+    #     self.register.verify_password_validation_message("min")
+    #
+    # def test_015_register_when_password_is_more_than_100_characters(self):
+    #     """Verify user is not able to register when password is more than 100 characters."""
+    #     self.register.enter_password(password=MORE_THAN_100_CHARACTERS)
+    #     self.register.verify_password_validation_message('max')
+    #
+    # def test_016_register_when_password_and_confirm_password_mismatch(self):
+    #     """Verify user is not able to register when password and confirm password mismatch."""
+    #     self.register.enter_password(password=PASSWORD)
+    #     self.register.enter_confirm_password(confirm_password=MISMATCH_CONFIRM_PASSWORD)
+    #     self.register.verify_password_validation_message('mismatch')
+    #
+    # def test_017_register_when_password_same_as_email(self):
+    #     """Verify user is not able to register when password is similar to email."""
+    #     self.register.enter_work_email(email=user_email)
+    #     self.register.enter_password(password=PASSWORD_LOOKALIKE_EMAIL)
+    #     self.register.verify_password_validation_message("same_as_email")
+    #
+    # def test_018_register_when_phone_number_is_invalid(self):
+    #     """Verify user is not able to register when entered invalid phone number."""
+    #     self.register.enter_work_phone(phone=INVALID_PHONE_NUM)
+    #     self.register.verify_phone_validation_message()
+    #
+    # def test_019_verify_privacy_policy(self):
+    #     """Verify privacy policy link navigates user to privacy policy page.."""
+    #     self.register.verify_privacy_policy_link()
+    #
+    # def test_020_verify_terms_of_service_link(self):
+    #     """Verify terms of service link navigates user to terms and services page."""
+    #     self.register.verify_terms_of_service_link()
+    #
+    # def test_021_verify_sdk_agreement_link(self):
+    #     """Verify sdk agreement link navigates user to sdk agreement page."""
+    #     self.register.verify_sdk_agreement_link()
+    #
+    # def test_022_verify_ACH_transfer_link(self):
+    #     """Verify ACH transfer api link navigates user to ach transfer page."""
+    #     self.register.verify_ach_transfer_api_link()
+    #
+    # def test_023_verify_digital_wallet_api_link(self):
+    #     """Verify digital wallet api link navigates user to digital wallet page."""
+    #     self.register.verify_digital_wallet_api_link()
+    #
+    # def test_024_verify_bank_account_link(self):
+    #     """Verify bank account linking api navigates user to bank account link page"""
+    #     self.register.verify_bank_account_linking_api_link()
+    #
+    # def test_025_verify_kyc_kyb_identity_verification_link(self):
+    #     """Verify user navigates to kyb kyc verification page."""
+    #     self.register.verify_kyc_identity_verification_link()
+    #
+    # def test_026_verify_already_have_account_text(self):
+    #     """Verify page contains already have a sila account text."""
+    #     self.register.verify_already_have_sila_account_text()
+    #
+    # def test_027_verify_login_link(self):
+    #     """Verify user is able to navigates to login page."""
+    #     self.register.verify_login_link()
+    #
+    def test_028_verify_user_navigates_to_invite_team_screen(self):
+        """Verify user is able to navigate from register screen to invite team screen."""
+        self.driver.refresh()
+        time.sleep(5)
+        self.register.sign_up_form(owner_first_name, SURNAME, COMPANY_NAME, user_email, PHONE, PASSWORD,
+                                   CONFIRM_PASSWORD)
+        self.register.click_terms_checkbox()
+        self.register.click_confirm_account_button()
+        utility.insert_data(user_email)
+        self.register.verify_user_navigates_to_invite_team_screen()
 
-    # def test_034_register_user_from_email_confirmation_link(self):
-    #     """Verify user should redirect to home screen after clicking on email confirmation link"""
-    #
-    #     self.register.verifyConfirmEmail(admin)
-    #     time.sleep(20)
+    def test_029_verify_team_screen_text(self):
+        """Verify heading and paragraph on invite team member screen.."""
+        self.register.verify_continue_button_state(False)
+
+    def test_030_verify_team_name_already_exists_validation(self):
+        """Verify team name already exist validation error"""
+        self.register.verify_team_name_already_exists()
+
+    def test_030_add_new_team_name(self):
+        """Verify user is able to add new team."""
+        self.register.add_new_team(team_name)
+        self.register.verify_continue_button_state(True)
+
+    def test_032_invite_already_registered_user_to_team(self):
+        """Verify user is not able to invite already registered member."""
+        self.register.verify_invite_already_registered_user_validation("test@gmail.com")
+
+    def test_033_invite_user_with_invalid_email(self):
+        """Verify user is not able to invite team member when email is invalid."""
+        self.register.verify_invite_user_with_invalid_email(email=INVALID_EMAIL)
+        self.register.verify_continue_button_state(False)
+
+    def test_034_invite_team_member_successfully(self):
+        """Verify user is able to invite team member from add team box."""
+        self.register.verify_team_member_invited_successfully(email=RANDOM_EMAIL)
+
+    def test_035_register_user_successfully(self):
+        """Verify user navigates to welcome screen successfully."""
+        self.register.verify_welcome_screen()
+
+    def test_036_register_user_from_email_confirmation_link(self):
+        """Verify user should redirect to home screen after clicking on email confirmation link"""
+        self.register.verify_confirm_email(admin)
+        time.sleep(20)
 
     # def test_035_register_user_for_owner_role(self):
     #     """Verify user is able to register user as owner role."""
